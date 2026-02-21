@@ -82,37 +82,37 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TUI-01 | — | Pending |
-| TUI-02 | — | Pending |
-| TUI-03 | — | Pending |
-| TUI-04 | — | Pending |
-| TUI-05 | — | Pending |
-| TUI-06 | — | Pending |
-| TUI-07 | — | Pending |
-| TUI-08 | — | Pending |
-| TUI-09 | — | Pending |
-| ORCH-01 | — | Pending |
-| ORCH-02 | — | Pending |
-| ORCH-03 | — | Pending |
-| ORCH-04 | — | Pending |
-| ORCH-05 | — | Pending |
-| ORCH-06 | — | Pending |
-| APPLY-01 | — | Pending |
-| APPLY-02 | — | Pending |
-| APPLY-03 | — | Pending |
-| AGENT-01 | — | Pending |
-| AGENT-02 | — | Pending |
-| AGENT-03 | — | Pending |
-| AGENT-04 | — | Pending |
-| PKG-01 | — | Pending |
-| PKG-02 | — | Pending |
-| PKG-03 | — | Pending |
+| TUI-01 | Phase 2 | Pending |
+| TUI-02 | Phase 2 | Pending |
+| TUI-03 | Phase 3 | Pending |
+| TUI-04 | Phase 2 | Pending |
+| TUI-05 | Phase 2 | Pending |
+| TUI-06 | Phase 2 | Pending |
+| TUI-07 | Phase 2 | Pending |
+| TUI-08 | Phase 2 | Pending |
+| TUI-09 | Phase 3 | Pending |
+| ORCH-01 | Phase 4 | Pending |
+| ORCH-02 | Phase 3 | Pending |
+| ORCH-03 | Phase 3 | Pending |
+| ORCH-04 | Phase 4 | Pending |
+| ORCH-05 | Phase 4 | Pending |
+| ORCH-06 | Phase 3 | Pending |
+| APPLY-01 | Phase 4 | Pending |
+| APPLY-02 | Phase 4 | Pending |
+| APPLY-03 | Phase 4 | Pending |
+| AGENT-01 | Phase 5 | Pending |
+| AGENT-02 | Phase 5 | Pending |
+| AGENT-03 | Phase 1 | Pending |
+| AGENT-04 | Phase 1 | Pending |
+| PKG-01 | Phase 5 | Pending |
+| PKG-02 | Phase 5 | Pending |
+| PKG-03 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 25 total
-- Mapped to phases: 0
-- Unmapped: 25 ⚠️ (will be resolved by roadmapper)
+- Mapped to phases: 25
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-21*
-*Last updated: 2026-02-21 after initial definition*
+*Last updated: 2026-02-21 after roadmap creation*
