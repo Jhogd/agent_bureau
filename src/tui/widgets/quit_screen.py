@@ -17,11 +17,15 @@ class QuitScreen(ModalScreen[bool]):
         grid-size: 2;
         grid-gutter: 1 2;
         grid-rows: 1fr 3;
-        padding: 0 1;
+        padding: 1 4;
         width: 60;
         height: 11;
         border: thick $background 80%;
         background: $surface;
+    }
+
+    #quit, #cancel {
+        width: 100%;
     }
 
     #question {
