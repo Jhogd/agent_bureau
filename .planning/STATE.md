@@ -38,6 +38,7 @@ Progress: [████░░░░░░] 37%
 | Phase 02-static-tui-layout P01 | 2 min | 1 task | 1 file |
 | Phase 02-static-tui-layout P02 | 3 min | 2 tasks | 2 files |
 | Phase 02-static-tui-layout P03 | 3 min | 2 tasks | 6 files |
+| Phase 02-static-tui-layout P04 | 5 | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -62,6 +63,8 @@ Recent decisions affecting current work:
 - [Phase 02-03]: str(label.render()) used instead of label.renderable — Textual 8.x Label API change
 - [Phase 02-03]: app.screen.query_one() required for modal widget queries — app.query_one() searches default screen only
 - [Phase 02-03]: QuitScreen.DEFAULT_CSS duplicates styles.tcss dialog rules for standalone portability
+- [Phase 02-static-tui-layout]: No up/down bindings at App level — AgentPane handles scroll independently to avoid cross-pane scrolling
+- [Phase 02-static-tui-layout]: ctrl+c uses priority=True to intercept before Textual built-in quit and show QuitScreen dialog
 
 ### Pending Todos
 
