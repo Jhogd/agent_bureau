@@ -29,7 +29,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. When an agent subprocess times out, the bridge emits a recoverable error event and terminates the subprocess without leaving a zombie process
   3. When an agent returns malformed output, the bridge emits an error event and the harness continues without crashing
   4. All subprocess reads are non-blocking; a slow agent does not stall a fast agent's token delivery
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Project setup: pyproject.toml update (pytest-asyncio, asyncio_mode) + tui package skeleton
+- [ ] 01-02-PLAN.md — TDD: event bus types + bridge implementation proven via FakeAgentRunner tests
+- [ ] 01-03-PLAN.md — PTY agent spike: document real claude binary streaming behavior (PTY vs PIPE)
 
 ### Phase 2: Static TUI Layout
 **Goal**: Users can see the columnar agent layout, scroll panes, navigate by keyboard, and read syntax-highlighted code — all without live agents running
@@ -84,7 +89,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Async Streaming Bridge | 0/TBD | Not started | - |
+| 1. Async Streaming Bridge | 0/3 | Not started | - |
 | 2. Static TUI Layout | 0/TBD | Not started | - |
 | 3. Live Streaming Integration | 0/TBD | Not started | - |
 | 4. Flow Control and Code Apply | 0/TBD | Not started | - |
