@@ -36,8 +36,8 @@
 
 - [ ] **AGENT-01**: At startup, Agent Bureau auto-detects installed CLI agents on PATH (claude, codex, aider, etc.)
 - [ ] **AGENT-02**: User can save a preferred agent pair/roster to a config file for reuse
-- [ ] **AGENT-03**: If an agent times out, user sees a clear error message and the session recovers gracefully
-- [ ] **AGENT-04**: If an agent returns malformed output, user sees a clear error and the session does not crash
+- [x] **AGENT-03**: If an agent times out, user sees a clear error message and the session recovers gracefully
+- [x] **AGENT-04**: If an agent returns malformed output, user sees a clear error and the session does not crash
 
 ### Packaging & Install
 
@@ -102,8 +102,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | APPLY-03 | Phase 4 | Pending |
 | AGENT-01 | Phase 5 | Pending |
 | AGENT-02 | Phase 5 | Pending |
-| AGENT-03 | Phase 1 | Pending |
-| AGENT-04 | Phase 1 | Pending |
+| AGENT-03 | Phase 1 | Complete |
+| AGENT-04 | Phase 1 | Complete |
 | PKG-01 | Phase 5 | Pending |
 | PKG-02 | Phase 5 | Pending |
 | PKG-03 | Phase 5 | Pending |

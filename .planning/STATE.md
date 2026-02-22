@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 1 of 5 (Async Streaming Bridge)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-02-21 — Roadmap created; phases derived from requirements
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-02-22 — Plan 01-01 complete: tui package skeleton and pytest-asyncio configured
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 7%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: -
-- Total execution time: 0 hours
+- Total plans completed: 1
+- Average duration: 2 min
+- Total execution time: 0.03 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01-async-streaming-bridge | 1/3 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: none yet
+- Last 5 plans: 01-01 (2 min)
 - Trend: -
 
 *Updated after each plan completion*
@@ -45,6 +45,9 @@ Recent decisions affecting current work:
 - [Roadmap]: Build on disagree_v1 foundation — core is untouched; bridge pattern isolates TUI from existing orchestration
 - [Roadmap]: Textual chosen as TUI framework (asyncio-native, RichLog streaming, ModalScreen); pin >=0.70.0,<1.0 with lock file
 - [Roadmap]: Bridge bypasses adapters.py for streaming in Phase 1 (Option A); Option B async stream() refactor is v2
+- [01-01]: Project renamed from disagree-v1 to agent-bureau in pyproject.toml per research recommendation
+- [01-01]: pytest-asyncio pinned >=0.25,<2.0 to control major version and avoid v2 breaking changes
+- [01-01]: asyncio_mode=auto configured — all async def test_* functions run without @pytest.mark.asyncio decorators
 
 ### Pending Todos
 
@@ -58,6 +61,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-21
-Stopped at: Roadmap created; ROADMAP.md and STATE.md written; REQUIREMENTS.md traceability updated
+Last session: 2026-02-22
+Stopped at: Completed 01-async-streaming-bridge/01-01-PLAN.md
 Resume file: None
