@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 2 of 5 (Static TUI Layout — in progress)
-Plan: 1 of 4 in current phase
-Status: Phase 2 plan 01 complete — textual dependency pinned
-Last activity: 2026-02-22 — 02-01: textual>=0.80.0,<9 pinned in pyproject.toml
+Plan: 2 of 4 in current phase
+Status: Phase 2 plan 02 complete — write_content_to_pane implemented and tested
+Last activity: 2026-02-22 — 02-02: fenced code block parser and RichLog writer proven by 8-case TDD suite
 
-Progress: [██░░░░░░░░] 20%
+Progress: [███░░░░░░░] 25%
 
 ## Performance Metrics
 
@@ -36,6 +36,7 @@ Progress: [██░░░░░░░░] 20%
 *Updated after each plan completion*
 
 | Phase 02-static-tui-layout P01 | 2 min | 1 task | 1 file |
+| Phase 02-static-tui-layout P02 | 3 min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -54,6 +55,9 @@ Recent decisions affecting current work:
 - [01-03]: claude CLI refuses to run inside another Claude Code session (CLAUDECODE env var); Phase 3 integration tests must run outside Claude Code
 - [Phase 02-01]: Pin textual>=0.80.0,<9 (not >=0.70.0,<1.0) — textual is at major version 8.x; <1.0 upper bound would have failed
 - [Phase 02-01]: Use project .venv at /agent-bureau/.venv — system pip is externally managed (PEP 668)
+- [Phase 02-02]: MagicMock used as RichLog stand-in — avoids async Pilot context, keeps tests fast and synchronous
+- [Phase 02-02]: tests/tui/__init__.py intentionally absent — prevents src/tui/ shadowing in pytest sys.path (Phase 01-02 pitfall)
+- [Phase 02-02]: SCROLLBACK_LIMIT=5000 defined as module constant for future RichLog max_lines configuration
 
 ### Pending Todos
 
@@ -68,5 +72,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 02-01-PLAN.md
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None

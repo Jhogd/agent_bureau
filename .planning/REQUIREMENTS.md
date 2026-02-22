@@ -11,7 +11,7 @@
 - [ ] **TUI-02**: Each pane is labeled with the agent's name (e.g., "claude", "codex")
 - [ ] **TUI-03**: Agent output streams token-by-token into the correct pane as the agent responds
 - [ ] **TUI-04**: Each pane is independently scrollable with bounded scrollback (no OOM)
-- [ ] **TUI-05**: Code blocks in agent output are syntax-highlighted
+- [x] **TUI-05**: Code blocks in agent output are syntax-highlighted
 - [x] **TUI-06**: Layout adapts to terminal width (80 / 120 / wide column breakpoints)
 - [ ] **TUI-07**: User can navigate the TUI entirely by keyboard (scroll, pick, exit)
 - [ ] **TUI-08**: User can exit at any time with Ctrl-C or q without corrupting state or leaving zombie processes
@@ -86,7 +86,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TUI-02 | Phase 2 | Pending |
 | TUI-03 | Phase 3 | Pending |
 | TUI-04 | Phase 2 | Pending |
-| TUI-05 | Phase 2 | Pending |
+| TUI-05 | Phase 2 | Complete |
 | TUI-06 | Phase 2 | Complete |
 | TUI-07 | Phase 2 | Pending |
 | TUI-08 | Phase 2 | Pending |
