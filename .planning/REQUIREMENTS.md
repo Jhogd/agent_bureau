@@ -7,10 +7,10 @@
 
 ### TUI Layout
 
-- [ ] **TUI-01**: User sees agent responses displayed side-by-side in columnar panes, one column per agent
-- [ ] **TUI-02**: Each pane is labeled with the agent's name (e.g., "claude", "codex")
+- [x] **TUI-01**: User sees agent responses displayed side-by-side in columnar panes, one column per agent
+- [x] **TUI-02**: Each pane is labeled with the agent's name (e.g., "claude", "codex")
 - [ ] **TUI-03**: Agent output streams token-by-token into the correct pane as the agent responds
-- [ ] **TUI-04**: Each pane is independently scrollable with bounded scrollback (no OOM)
+- [x] **TUI-04**: Each pane is independently scrollable with bounded scrollback (no OOM)
 - [x] **TUI-05**: Code blocks in agent output are syntax-highlighted
 - [x] **TUI-06**: Layout adapts to terminal width (80 / 120 / wide column breakpoints)
 - [ ] **TUI-07**: User can navigate the TUI entirely by keyboard (scroll, pick, exit)
@@ -82,10 +82,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TUI-01 | Phase 2 | Pending |
-| TUI-02 | Phase 2 | Pending |
+| TUI-01 | Phase 2 | Complete |
+| TUI-02 | Phase 2 | Complete |
 | TUI-03 | Phase 3 | Pending |
-| TUI-04 | Phase 2 | Pending |
+| TUI-04 | Phase 2 | Complete |
 | TUI-05 | Phase 2 | Complete |
 | TUI-06 | Phase 2 | Complete |
 | TUI-07 | Phase 2 | Pending |

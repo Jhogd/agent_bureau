@@ -96,7 +96,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Async Streaming Bridge | 3/3 | Complete | 2026-02-22 |
-| 2. Static TUI Layout | 2/4 | In Progress|  |
+| 2. Static TUI Layout | 3/4 | In Progress|  |
 | 3. Live Streaming Integration | 0/TBD | Not started | - |
 | 4. Flow Control and Code Apply | 0/TBD | Not started | - |
 | 5. Agent Discovery, Config, and Packaging | 0/TBD | Not started | - |
