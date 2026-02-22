@@ -9,10 +9,10 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 
 ## Current Position
 
-Phase: 2 of 5 (Static TUI Layout — not yet started)
-Plan: 0 of TBD in current phase
-Status: Phase 1 complete — ready to plan Phase 2
-Last activity: 2026-02-22 — Phase 1 complete: async streaming bridge verified
+Phase: 2 of 5 (Static TUI Layout — in progress)
+Plan: 1 of 4 in current phase
+Status: Phase 2 plan 01 complete — textual dependency pinned
+Last activity: 2026-02-22 — 02-01: textual>=0.80.0,<9 pinned in pyproject.toml
 
 Progress: [██░░░░░░░░] 20%
 
@@ -35,6 +35,8 @@ Progress: [██░░░░░░░░] 20%
 
 *Updated after each plan completion*
 
+| Phase 02-static-tui-layout P01 | 2 min | 1 task | 1 file |
+
 ## Accumulated Context
 
 ### Decisions
@@ -50,6 +52,8 @@ Recent decisions affecting current work:
 - [01-02]: tests/tui/__init__.py must NOT exist — its presence causes tests/tui/ to shadow src/tui/ in pytest's sys.path resolution
 - [01-02]: run_bridge_with_fakes() defined in test file (not in src); FakeAgentRunner is test-only infrastructure
 - [01-03]: claude CLI refuses to run inside another Claude Code session (CLAUDECODE env var); Phase 3 integration tests must run outside Claude Code
+- [Phase 02-01]: Pin textual>=0.80.0,<9 (not >=0.70.0,<1.0) — textual is at major version 8.x; <1.0 upper bound would have failed
+- [Phase 02-01]: Use project .venv at /agent-bureau/.venv — system pip is externally managed (PEP 668)
 
 ### Pending Todos
 
@@ -64,5 +68,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Phase 1 complete — all 3 plans executed, verified, committed
+Stopped at: Completed 02-01-PLAN.md
 Resume file: None
