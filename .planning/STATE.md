@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 
 ## Current Position
 
-Phase: 2 of 5 (Static TUI Layout — in progress)
-Plan: 3 of 4 in current phase
-Status: Phase 2 plan 03 complete — AgentPane and QuitScreen widgets built and proven by 8 Pilot tests
-Last activity: 2026-02-22 — 02-03: AgentPane (focusable RichLog pane), QuitScreen (ModalScreen[bool]) with full test coverage
+Phase: 2 of 5 (Static TUI Layout — complete)
+Plan: 4 of 4 in current phase (phase complete — ready for Phase 3)
+Status: Phase 2 complete — AgentBureauApp assembled, 13 integration tests pass, human visual checkpoint approved
+Last activity: 2026-02-22 — 02-04: AgentBureauApp wired, human visual sign-off on all 8 checks, dialog padding fix applied
 
-Progress: [████░░░░░░] 37%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
@@ -38,7 +38,7 @@ Progress: [████░░░░░░] 37%
 | Phase 02-static-tui-layout P01 | 2 min | 1 task | 1 file |
 | Phase 02-static-tui-layout P02 | 3 min | 2 tasks | 2 files |
 | Phase 02-static-tui-layout P03 | 3 min | 2 tasks | 6 files |
-| Phase 02-static-tui-layout P04 | 5 | 1 tasks | 2 files |
+| Phase 02-static-tui-layout P04 | 15 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -65,6 +65,7 @@ Recent decisions affecting current work:
 - [Phase 02-03]: QuitScreen.DEFAULT_CSS duplicates styles.tcss dialog rules for standalone portability
 - [Phase 02-static-tui-layout]: No up/down bindings at App level — AgentPane handles scroll independently to avoid cross-pane scrolling
 - [Phase 02-static-tui-layout]: ctrl+c uses priority=True to intercept before Textual built-in quit and show QuitScreen dialog
+- [02-04]: Dialog padding set to 1 4 and buttons to width: 100% — human visual review flagged left-aligned Quit/Cancel buttons; fix confirmed by user
 
 ### Pending Todos
 
@@ -79,5 +80,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 02-03-PLAN.md
+Stopped at: Completed 02-04-PLAN.md (Phase 2 complete)
 Resume file: None

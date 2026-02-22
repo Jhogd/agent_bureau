@@ -13,7 +13,7 @@ The existing `disagree_v1` orchestration core (parallel execution, disagreement 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Async Streaming Bridge** - Async subprocess fan-out with typed event bus; all streaming correctness proven before any TUI code exists
-- [ ] **Phase 2: Static TUI Layout** - Side-by-side columnar layout with keyboard navigation, syntax highlighting, and scrollable panes validated against placeholder content
+- [x] **Phase 2: Static TUI Layout** - Side-by-side columnar layout with keyboard navigation, syntax highlighting, and scrollable panes validated against placeholder content
 - [ ] **Phase 3: Live Streaming Integration** - Bridge wired to TUI; tokens stream into correct panes in real time; status bar and disagreement state display live
 - [ ] **Phase 4: Flow Control and Code Apply** - Flow picker modal, live-debate mode, pick-winner UX, diff preview, and file-write confirmation
 - [ ] **Phase 5: Agent Discovery, Config, and Packaging** - Auto-detection of CLI agents on PATH, config file for default roster, and installable `agent-bureau` entry point
@@ -49,10 +49,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Add textual>=0.80.0,<9 runtime dependency to pyproject.toml
-- [ ] 02-02-PLAN.md — TDD: write_content_to_pane() fenced-code parser proven by tests
-- [ ] 02-03-PLAN.md — AgentPane widget + QuitScreen widget + styles.tcss with Pilot tests
-- [ ] 02-04-PLAN.md — AgentBureauApp wiring + integration tests + human visual checkpoint
+- [x] 02-01-PLAN.md — Add textual>=0.80.0,<9 runtime dependency to pyproject.toml
+- [x] 02-02-PLAN.md — TDD: write_content_to_pane() fenced-code parser proven by tests
+- [x] 02-03-PLAN.md — AgentPane widget + QuitScreen widget + styles.tcss with Pilot tests
+- [x] 02-04-PLAN.md — AgentBureauApp wiring + integration tests + human visual checkpoint
 
 ### Phase 3: Live Streaming Integration
 **Goal**: Users can watch tokens stream into the correct agent panes in real time, see the status bar reflect live agent state, and see disagreements flagged as they are classified
@@ -96,7 +96,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Async Streaming Bridge | 3/3 | Complete | 2026-02-22 |
-| 2. Static TUI Layout | 3/4 | In Progress|  |
+| 2. Static TUI Layout | 4/4 | Complete | 2026-02-22 |
 | 3. Live Streaming Integration | 0/TBD | Not started | - |
 | 4. Flow Control and Code Apply | 0/TBD | Not started | - |
 | 5. Agent Discovery, Config, and Packaging | 0/TBD | Not started | - |
