@@ -12,7 +12,7 @@ The existing `disagree_v1` orchestration core (parallel execution, disagreement 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Async Streaming Bridge** - Async subprocess fan-out with typed event bus; all streaming correctness proven before any TUI code exists
+- [x] **Phase 1: Async Streaming Bridge** - Async subprocess fan-out with typed event bus; all streaming correctness proven before any TUI code exists
 - [ ] **Phase 2: Static TUI Layout** - Side-by-side columnar layout with keyboard navigation, syntax highlighting, and scrollable panes validated against placeholder content
 - [ ] **Phase 3: Live Streaming Integration** - Bridge wired to TUI; tokens stream into correct panes in real time; status bar and disagreement state display live
 - [ ] **Phase 4: Flow Control and Code Apply** - Flow picker modal, live-debate mode, pick-winner UX, diff preview, and file-write confirmation
@@ -32,9 +32,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Project setup: pyproject.toml update (pytest-asyncio, asyncio_mode) + tui package skeleton
-- [ ] 01-02-PLAN.md — TDD: event bus types + bridge implementation proven via FakeAgentRunner tests
-- [ ] 01-03-PLAN.md — PTY agent spike: document real claude binary streaming behavior (PTY vs PIPE)
+- [x] 01-01-PLAN.md — Project setup: pyproject.toml update (pytest-asyncio, asyncio_mode) + tui package skeleton
+- [x] 01-02-PLAN.md — TDD: event bus types + bridge implementation proven via FakeAgentRunner tests
+- [x] 01-03-PLAN.md — PTY agent spike: document real claude binary streaming behavior (PTY vs PIPE)
 
 ### Phase 2: Static TUI Layout
 **Goal**: Users can see the columnar agent layout, scroll panes, navigate by keyboard, and read syntax-highlighted code — all without live agents running
@@ -89,7 +89,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Async Streaming Bridge | 0/3 | Not started | - |
+| 1. Async Streaming Bridge | 3/3 | Complete | 2026-02-22 |
 | 2. Static TUI Layout | 0/TBD | Not started | - |
 | 3. Live Streaming Integration | 0/TBD | Not started | - |
 | 4. Flow Control and Code Apply | 0/TBD | Not started | - |
