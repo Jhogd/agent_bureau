@@ -46,7 +46,13 @@ Plans:
   3. Code blocks in pane content are syntax-highlighted
   4. User can navigate the entire TUI using only the keyboard (scroll up/down, switch panes, exit)
   5. User can exit at any time with Ctrl-C or `q` and the terminal is left in a clean state
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Add textual>=0.80.0,<9 runtime dependency to pyproject.toml
+- [ ] 02-02-PLAN.md — TDD: write_content_to_pane() fenced-code parser proven by tests
+- [ ] 02-03-PLAN.md — AgentPane widget + QuitScreen widget + styles.tcss with Pilot tests
+- [ ] 02-04-PLAN.md — AgentBureauApp wiring + integration tests + human visual checkpoint
 
 ### Phase 3: Live Streaming Integration
 **Goal**: Users can watch tokens stream into the correct agent panes in real time, see the status bar reflect live agent state, and see disagreements flagged as they are classified
@@ -90,7 +96,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Async Streaming Bridge | 3/3 | Complete | 2026-02-22 |
-| 2. Static TUI Layout | 0/TBD | Not started | - |
+| 2. Static TUI Layout | 0/4 | Not started | - |
 | 3. Live Streaming Integration | 0/TBD | Not started | - |
 | 4. Flow Control and Code Apply | 0/TBD | Not started | - |
 | 5. Agent Discovery, Config, and Packaging | 0/TBD | Not started | - |
