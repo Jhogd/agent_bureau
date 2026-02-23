@@ -2,28 +2,26 @@
 phase: 02-static-tui-layout
 plan: "04"
 subsystem: ui
-tags: [textual, python, tui, pilot, integration-tests]
+tags: [textual, tui, pilot, integration-tests]
 
 # Dependency graph
 requires:
   - phase: 02-static-tui-layout
-    provides: AgentPane widget, QuitScreen modal, styles.tcss (plans 02-03)
-
+    provides: AgentPane, QuitScreen widgets, styles.tcss (plan 03)
 provides:
-  - AgentBureauApp(App) — full wired application entry point at src/tui/app.py
-  - Pilot-based integration tests for layout, navigation, and exit (13 tests)
-  - Human-verified visual layout at 80/120/wide terminal widths
-
-affects: [03-streaming-integration, 04-agent-runner, 05-end-to-end]
+  - AgentBureauApp: runnable Textual app wiring two AgentPane columns + divider
+  - Keyboard bindings: left/right pane focus, q to quit, Ctrl-C → QuitScreen
+  - 13 Pilot-based integration tests covering layout, focus, scrolling, and exit paths
+  - Human visual verification: all 8 checks approved
+affects: [03-live-streaming-integration]
 
 # Tech tracking
 tech-stack:
   added: []
   patterns:
-    - "App-level left/right bindings for pane switching; up/down remain in AgentPane only"
-    - "ctrl+c intercepted with priority=True to push QuitScreen instead of immediate exit"
-    - "on_mount() sets explicit focus and loads placeholder content before first render"
-    - "Dialog padding: 1 4 with width: 100% buttons for centered Quit/Cancel layout"
+    - App-level left/right bindings route focus; pane-level up/down handle scroll (no cross-contamination)
+    - ctrl+c uses priority=True to intercept before Textual built-in quit
+    - on_mount() sets explicit focus to pane-left so arrow keys work immediately on startup
 
 key-files:
   created:
@@ -34,95 +32,78 @@ key-files:
 
 key-decisions:
   - "No up/down bindings at App level — AgentPane handles scroll independently to avoid cross-pane scrolling"
-  - "left/right bindings do NOT use priority=True — they yield to focused widget first"
   - "ctrl+c uses priority=True to intercept before Textual built-in quit and show QuitScreen dialog"
-  - "Placeholder content injected in on_mount() for Phase 2 layout validation"
-  - "Dialog padding increased to 1 4 and buttons set to width: 100% for centered visual alignment"
+  - "Dialog padding set to 1 4 and buttons to width: 100% — human visual review flagged left-aligned buttons; fix confirmed"
 
 patterns-established:
-  - "App wires widgets via compose(); on_mount() handles post-render initialization"
-  - "push_screen(QuitScreen(), callback) pattern for conditional exit from modal"
+  - "App composes widgets, binds navigation keys, loads placeholder content in on_mount()"
+  - "Scroll actions live in the widget (AgentPane), not the App — preserves focus isolation"
 
 requirements-completed:
   - TUI-07
   - TUI-08
 
 # Metrics
-duration: 15min
-completed: 2026-02-22
+duration: 20min
+completed: 2026-02-23
 ---
 
-# Phase 2 Plan 04: AgentBureauApp Assembly Summary
+# Plan 02-04: AgentBureauApp Summary
 
-**Runnable AgentBureauApp assembling two focusable AgentPane columns with keyboard navigation, placeholder content, and 13 Pilot integration tests — human-verified across all 8 visual checks**
+**Runnable Textual app wiring two AgentPane columns with keyboard pane-switching, Ctrl-C confirmation dialog, and human visual sign-off on all 8 layout checks**
 
 ## Performance
 
-- **Duration:** ~15 min
-- **Started:** 2026-02-22T21:50:54Z
-- **Completed:** 2026-02-22T22:10:00Z
-- **Tasks:** 2 of 2 complete (Task 1 automated, Task 2 human visual checkpoint approved)
+- **Duration:** ~20 min
+- **Completed:** 2026-02-23
+- **Tasks:** 2 (1 automated + 1 human-verify checkpoint)
 - **Files modified:** 3
 
 ## Accomplishments
-- AgentBureauApp wires AgentPane + QuitScreen into a runnable Textual application
-- All 13 Pilot integration tests pass: layout at 80/120/200 columns, startup focus, arrow-key navigation, scroll isolation, q exit, ctrl+c dialog
-- Full test suite (52 tests) passes with zero regressions
-- Human visual checkpoint approved: all 8 checks passed including pane focus highlighting, keyboard navigation, scroll isolation, terminal resize, q exit, and Ctrl-C dialog flow
-- Dialog padding increased (`padding: 1 4`, `width: 100%` on buttons) to visually center the Quit/Cancel buttons
+- `AgentBureauApp` wires two AgentPane columns + `│` divider in a full-screen `Horizontal` container
+- 13 Pilot integration tests pass: layout at 80/120/200 columns, startup focus, arrow navigation, scroll isolation, `q` exit, Ctrl-C → QuitScreen
+- Human visual verification approved — all 8 checks confirmed in a live terminal
 
 ## Task Commits
 
-Each task was committed atomically:
-
-1. **Task 1: Implement AgentBureauApp and integration tests** - `5ba6eb1` (feat)
-2. **Task 2: Visual verification — dialog padding fix** - `58dbdc7` (fix)
-
-**Plan metadata:** `69a9c67` (docs: pre-checkpoint SUMMARY + STATE), updated post-approval
+1. **Task 1: Implement AgentBureauApp and integration tests** — `5ba6eb1` (feat)
+2. **Fix: Dialog button alignment** — `58dbdc7` (fix — applied after human visual review)
 
 ## Files Created/Modified
-- `src/tui/app.py` - AgentBureauApp main application with compose, on_mount, bindings, and main() entry point
-- `tests/tui/test_app.py` - 13 Pilot-based integration tests for layout, focus, scroll, and exit
-- `src/tui/widgets/quit_screen.py` - Dialog padding increased to 1 4; button width set to 100% for centered layout
+- `src/tui/app.py` — AgentBureauApp with compose, on_mount, focus actions, quit/confirm_quit actions
+- `tests/tui/test_app.py` — 13 Pilot-based integration tests
+- `src/tui/widgets/quit_screen.py` — Dialog padding `1 4`; buttons `width: 100%`
 
 ## Decisions Made
-- No up/down bindings at App level — AgentPane BINDINGS handle scroll when focused; App-level bindings would fire regardless of focus and scroll both panes simultaneously
-- left/right without priority=True — yields to any focused widget first, avoiding conflicts
-- ctrl+c with priority=True — pre-empts Textual's built-in quit to show the QuitScreen confirmation dialog
-- Placeholder content uses triple-quoted string with embedded fenced code block to exercise syntax highlighting in both panes
-- Dialog padding set to `padding: 1 4` and buttons to `width: 100%` after human visual review flagged left-aligned Quit/Cancel buttons
+- No App-level up/down bindings — AgentPane owns scroll to prevent cross-pane scrolling
+- `ctrl+c` uses `priority=True` to intercept before Textual's built-in quit handler
+- Explicit `pane-left.focus()` in `on_mount()` required — without it no pane is focused and arrow keys are silent
 
 ## Deviations from Plan
 
 ### Auto-fixed Issues
 
-**1. [Rule 1 - Bug] Increased dialog padding to center Quit/Cancel buttons**
+**1. Dialog button alignment**
 - **Found during:** Task 2 (human visual checkpoint)
-- **Issue:** QuitScreen dialog rendered Quit/Cancel buttons left-aligned; visual review flagged the layout as incorrect
-- **Fix:** Set `padding: 1 4` on the dialog container and `width: 100%` on both buttons in quit_screen.py
-- **Files modified:** src/tui/widgets/quit_screen.py
-- **Verification:** User confirmed visually after the fix; human checkpoint approved
+- **Issue:** Quit button was flush with the left edge of the dialog; misaligned appearance
+- **Fix:** Increased `#dialog` padding from `0 1` to `1 4`; added `#quit, #cancel { width: 100%; }`
+- **Files modified:** `src/tui/widgets/quit_screen.py`
+- **Verification:** User confirmed spacing looks good in live terminal
 - **Committed in:** `58dbdc7`
 
 ---
 
-**Total deviations:** 1 auto-fixed (1 visual bug from human review)
-**Impact on plan:** Fix necessary for correct dialog UX. No scope creep.
+**Total deviations:** 1 auto-fixed (visual polish from human review)
+**Impact on plan:** Cosmetic fix only; no behavioral changes.
 
 ## Issues Encountered
-
-None beyond the dialog padding fix above — all 13 automated tests passed on first run.
-
-## User Setup Required
-
-None - no external service configuration required.
+- System Python missing textual (installed in `.venv` only) — user needed `source .venv/bin/activate` or `.venv/bin/python -m tui.app`
 
 ## Next Phase Readiness
-- AgentBureauApp is runnable: `python -m tui.app` or via `agent-bureau` CLI entry point
-- All 8 human visual checks passed: pane labels, focus highlighting, keyboard navigation, scroll isolation, terminal resize, q exit, Ctrl-C dialog (cancel and quit)
-- Phase 3 streaming integration can replace `write_content(_PLACEHOLDER_CONTENT)` calls with live streaming
-- Phase 2 is complete — all 4 plans finished, all automated tests pass, human visual sign-off obtained
+- Phase 2 fully complete — all 52 tests pass, TUI runs and is visually correct
+- Phase 3 (Live Streaming Integration) can begin: bridge (Phase 1) and TUI shell (Phase 2) are both proven
+- Blocker to track: `claude` CLI refuses to run inside Claude Code session (CLAUDECODE env var); Phase 3 integration tests must run outside Claude Code with CLAUDECODE unset
 
 ---
 *Phase: 02-static-tui-layout*
-*Completed: 2026-02-22*
+*Completed: 2026-02-23*
