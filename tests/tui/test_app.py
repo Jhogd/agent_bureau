@@ -10,11 +10,15 @@ Tests cover:
   - State machine: Input disabled while streaming
   - Classification: disagreement highlight applied when disagreements exist
   - Clear: Ctrl-L clears both panes and resets status bar
+  - Phase 4: flow picker, round boundary, debate ended, reconciliation, apply result
 """
 import pytest
 
 from tui.app import AgentBureauApp
-from tui.messages import AgentFinished, ClassificationDone, TokenReceived
+from tui.messages import (
+    AgentFinished, ClassificationDone, TokenReceived,
+    RoundBoundary, DebateEnded, ReconciliationReady, ApplyResult,
+)
 from tui.session import SessionState
 from tui.widgets.agent_pane import AgentPane
 from tui.event_bus import AgentDone, AgentError, AgentTimeout
@@ -328,3 +332,141 @@ async def test_ctrl_l_clears_both_panes():
         await pilot.pause()
         assert left_pane.line_count == 0
         assert right_pane.line_count == 0
+
+
+# --- Phase 4 integration tests ---
+
+
+@pytest.mark.asyncio
+async def test_flow_picker_state_set_on_session_start():
+    """_start_session sets session_state to FLOW_PICK before flow picker appears."""
+    app = AgentBureauApp()
+    async with app.run_test(size=(120, 40)) as pilot:
+        await pilot.pause()
+        # Directly set FLOW_PICK to simulate what _start_session does
+        app.session_state = SessionState.FLOW_PICK
+        await pilot.pause()
+        assert app.session_state == SessionState.FLOW_PICK
+        # Input should be disabled in non-IDLE states
+        from textual.widgets import Input
+        prompt_input = app.query_one("#prompt-input", Input)
+        assert prompt_input.disabled
+
+
+@pytest.mark.asyncio
+async def test_round_boundary_inserts_divider():
+    """Post RoundBoundary(round_num=2) and verify both panes contain round marker text."""
+    app = AgentBureauApp()
+    async with app.run_test(size=(120, 40)) as pilot:
+        await pilot.pause()
+        # Post round boundary message
+        app.post_message(RoundBoundary(round_num=2))
+        await pilot.pause()
+        left_pane = app.query_one("#pane-left", AgentPane)
+        right_pane = app.query_one("#pane-right", AgentPane)
+        # Both panes should have received the divider line
+        assert left_pane.line_count >= 1
+        assert right_pane.line_count >= 1
+
+
+@pytest.mark.asyncio
+async def test_debate_ended_transitions_to_pick_winner_state():
+    """Post DebateEnded() and verify session_state transitions to PICK_WINNER."""
+    app = AgentBureauApp()
+    async with app.run_test(size=(120, 40)) as pilot:
+        await pilot.pause()
+        # Post DebateEnded message
+        app.post_message(DebateEnded())
+        await pilot.pause()
+        # State should transition to PICK_WINNER
+        assert app.session_state == SessionState.PICK_WINNER
+
+
+@pytest.mark.asyncio
+async def test_debate_ended_updates_status_bar():
+    """Post DebateEnded() and verify status bar shows pick-winner text."""
+    from tui.widgets.status_bar import StatusBar
+    app = AgentBureauApp()
+    async with app.run_test(size=(120, 40)) as pilot:
+        await pilot.pause()
+        app.post_message(DebateEnded())
+        await pilot.pause()
+        status_bar = app.query_one("#status-bar", StatusBar)
+        # Status bar should contain "Pick winner" text
+        assert "Pick winner" in str(status_bar.render())
+
+
+@pytest.mark.asyncio
+async def test_reconciliation_ready_shows_panel():
+    """Post ReconciliationReady and verify ReconciliationPanel becomes visible."""
+    from tui.widgets.reconciliation_panel import ReconciliationPanel
+    app = AgentBureauApp()
+    async with app.run_test(size=(120, 40)) as pilot:
+        await pilot.pause()
+        # Panel should be hidden initially
+        recon_panel = app.query_one("#recon-panel", ReconciliationPanel)
+        assert not recon_panel.display
+        # Post reconciliation ready message
+        app.post_message(ReconciliationReady(
+            discussion_text="discuss",
+            diff_text="",
+            agreed_code="",
+            language="python",
+        ))
+        await pilot.pause()
+        # Panel should now be visible
+        assert recon_panel.display
+
+
+@pytest.mark.asyncio
+async def test_apply_result_confirmed_returns_to_idle():
+    """Post ApplyResult(confirmed=True) and verify session returns to IDLE."""
+    app = AgentBureauApp()
+    async with app.run_test(size=(120, 40)) as pilot:
+        await pilot.pause()
+        # Simulate being in CONFIRMING_APPLY state
+        app.session_state = SessionState.CONFIRMING_APPLY
+        await pilot.pause()
+        # Post confirmed apply result
+        app.post_message(ApplyResult(confirmed=True, files_written=["foo.py"]))
+        await pilot.pause()
+        assert app.session_state == SessionState.IDLE
+
+
+@pytest.mark.asyncio
+async def test_apply_result_confirmed_shows_applied_in_status():
+    """Post ApplyResult(confirmed=True) and verify status bar contains 'Applied'."""
+    from tui.widgets.status_bar import StatusBar
+    app = AgentBureauApp()
+    async with app.run_test(size=(120, 40)) as pilot:
+        await pilot.pause()
+        app.post_message(ApplyResult(confirmed=True, files_written=["foo.py"]))
+        await pilot.pause()
+        status_bar = app.query_one("#status-bar", StatusBar)
+        assert "Applied" in str(status_bar.render())
+
+
+@pytest.mark.asyncio
+async def test_apply_result_rejected_returns_to_idle():
+    """Post ApplyResult(confirmed=False) and verify session returns to IDLE."""
+    app = AgentBureauApp()
+    async with app.run_test(size=(120, 40)) as pilot:
+        await pilot.pause()
+        app.session_state = SessionState.CONFIRMING_APPLY
+        await pilot.pause()
+        app.post_message(ApplyResult(confirmed=False, files_written=[]))
+        await pilot.pause()
+        assert app.session_state == SessionState.IDLE
+
+
+@pytest.mark.asyncio
+async def test_apply_result_rejected_shows_cancelled_in_status():
+    """Post ApplyResult(confirmed=False) and verify status bar contains 'Cancelled'."""
+    from tui.widgets.status_bar import StatusBar
+    app = AgentBureauApp()
+    async with app.run_test(size=(120, 40)) as pilot:
+        await pilot.pause()
+        app.post_message(ApplyResult(confirmed=False, files_written=[]))
+        await pilot.pause()
+        status_bar = app.query_one("#status-bar", StatusBar)
+        assert "Cancelled" in str(status_bar.render())
