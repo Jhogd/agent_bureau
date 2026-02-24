@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 4 of 5 (Flow Control and Code Apply — in progress)
-Plan: 3 of 6 in current phase
-Status: Phase 4 in progress — 04-01 and 04-03 complete; 04-02, 04-04, 04-05, 04-06 remaining
-Last activity: 2026-02-24 — 04-03: apply.py (extract_code_proposals, generate_unified_diff, write_file_atomic) proven via TDD; 13 tests green
+Plan: 4 of 6 in current phase
+Status: Phase 4 in progress — 04-01, 04-02, 04-03, 04-04 complete; 04-05, 04-06 remaining
+Last activity: 2026-02-24 — 04-04: ReconciliationPanel widget, StatusBar Phase 4 methods, Phase 4 CSS; 117 tests green
 
-Progress: [████████░░] 82%
+Progress: [█████████░] 85%
 
 ## Performance Metrics
 
@@ -44,6 +44,8 @@ Progress: [████████░░] 82%
 | Phase 03-live-streaming-integration P04 | 15 | 2 tasks | 2 files |
 | Phase 04-flow-control-and-code-apply P01 | 15 min | 3 tasks | 4 files |
 | Phase 04-flow-control-and-code-apply P03 | 15 min | 3 tasks | 2 files |
+| Phase 04-flow-control-and-code-apply P02 | 15 | 3 tasks | 5 files |
+| Phase 04-flow-control-and-code-apply P04 | 20 min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -89,6 +91,9 @@ Recent decisions affecting current work:
 - [04-03]: write_file_atomic uses mkstemp(dir=target.parent) not /tmp — POSIX os.rename() is only atomic within the same filesystem
 - [04-03]: generate_unified_diff uses splitlines(keepends=True) — avoids trailing-newline omission pitfall in difflib output
 - [04-03]: FILE_COMMENT only matches first code line — subsequent comment lines are valid code and must not be stripped
+- [Phase 04-flow-control-and-code-apply]: Option imported from textual.widgets._option_list — Textual 8 public namespace does not export Option directly
+- [Phase 04-flow-control-and-code-apply]: FlowPickerScreen Ctrl+C uses priority=True binding to quit app without trapping user in modal
+- [Phase 04-flow-control-and-code-apply]: y/n/escape Binding pattern used for bool-dismiss modals (ConfirmEndDebateScreen, ApplyConfirmScreen) — no OptionList needed
 
 ### Pending Todos
 

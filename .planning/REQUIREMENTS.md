@@ -19,18 +19,18 @@
 
 ### Multi-Agent Orchestration
 
-- [ ] **ORCH-01**: User is prompted at the start of each session to choose a flow: pick-one or live-debate
+- [x] **ORCH-01**: User is prompted at the start of each session to choose a flow: pick-one or live-debate
 - [x] **ORCH-02**: Both agents run in parallel from the moment the prompt is submitted
 - [x] **ORCH-03**: Disagreements between agents are visualized in the TUI (approach, facts, confidence gap)
 - [ ] **ORCH-04**: In live-debate mode, user watches each round of agent exchange stream in real time
-- [ ] **ORCH-05**: In live-debate mode, user controls when to end the debate (keypress)
+- [x] **ORCH-05**: In live-debate mode, user controls when to end the debate (keypress)
 - [x] **ORCH-06**: State machine gates all transitions — streaming completes before any apply step begins
 
 ### Code Application
 
-- [ ] **APPLY-01**: When an agent proposes file changes, user sees a diff preview before anything is written
-- [ ] **APPLY-02**: User must explicitly confirm (keypress) before any file is written to disk
-- [ ] **APPLY-03**: User can pick which agent's proposed changes to apply (pick-winner flow)
+- [x] **APPLY-01**: When an agent proposes file changes, user sees a diff preview before anything is written
+- [x] **APPLY-02**: User must explicitly confirm (keypress) before any file is written to disk
+- [x] **APPLY-03**: User can pick which agent's proposed changes to apply (pick-winner flow)
 
 ### Agent Discovery & Config
 
@@ -91,15 +91,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TUI-07 | Phase 2 | Complete |
 | TUI-08 | Phase 2 | Complete |
 | TUI-09 | Phase 3 | Complete |
-| ORCH-01 | Phase 4 | Pending |
+| ORCH-01 | Phase 4 | Complete |
 | ORCH-02 | Phase 3 | Complete |
 | ORCH-03 | Phase 3 | Complete |
 | ORCH-04 | Phase 4 | Pending |
-| ORCH-05 | Phase 4 | Pending |
+| ORCH-05 | Phase 4 | Complete |
 | ORCH-06 | Phase 3 | Complete |
-| APPLY-01 | Phase 4 | Pending |
-| APPLY-02 | Phase 4 | Pending |
-| APPLY-03 | Phase 4 | Pending |
+| APPLY-01 | Phase 4 | Complete |
+| APPLY-02 | Phase 4 | Complete |
+| APPLY-03 | Phase 4 | Complete |
 | AGENT-01 | Phase 5 | Pending |
 | AGENT-02 | Phase 5 | Pending |
 | AGENT-03 | Phase 1 | Complete |
