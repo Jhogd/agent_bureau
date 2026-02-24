@@ -1,12 +1,23 @@
-"""Failing tests for tui.messages — RED phase.
+"""Tests for tui.messages — Phase 3 and Phase 4 message types.
 
-Tests verify that TokenReceived, AgentFinished, and ClassificationDone
+Tests verify that TokenReceived, AgentFinished, ClassificationDone (Phase 3)
+and RoundBoundary, DebateEnded, ReconciliationReady, ApplyResult (Phase 4)
 are Textual Message subclasses with the correct typed fields.
 """
-from tui.messages import TokenReceived, AgentFinished, ClassificationDone
+from tui.messages import (
+    TokenReceived,
+    AgentFinished,
+    ClassificationDone,
+    RoundBoundary,
+    DebateEnded,
+    ReconciliationReady,
+    ApplyResult,
+)
 from tui.event_bus import AgentDone, AgentError, AgentTimeout
 from textual.message import Message
 
+
+# --- Phase 3 message tests ---
 
 def test_token_received_is_message():
     # Arrange / Act
@@ -63,3 +74,74 @@ def test_classification_done_fields():
     # Assert
     assert msg.disagreements == []
     assert msg.full_texts == {"claude": "x", "codex": "y"}
+
+
+# --- Phase 4 message tests ---
+
+def test_round_boundary_has_round_num():
+    # Arrange / Act
+    msg = RoundBoundary(round_num=1)
+    # Assert
+    assert msg.round_num == 1
+
+
+def test_round_boundary_is_message():
+    # Arrange / Act
+    msg = RoundBoundary(round_num=2)
+    # Assert
+    assert isinstance(msg, Message)
+
+
+def test_debate_ended_is_message():
+    # Arrange / Act
+    msg = DebateEnded()
+    # Assert
+    assert isinstance(msg, Message)
+
+
+def test_reconciliation_ready_fields():
+    # Arrange / Act
+    msg = ReconciliationReady(
+        discussion_text="discuss",
+        diff_text="diff",
+        agreed_code="code",
+        language="python",
+    )
+    # Assert
+    assert msg.discussion_text == "discuss"
+    assert msg.diff_text == "diff"
+    assert msg.agreed_code == "code"
+    assert msg.language == "python"
+
+
+def test_reconciliation_ready_is_message():
+    # Arrange / Act
+    msg = ReconciliationReady(
+        discussion_text="d",
+        diff_text="f",
+        agreed_code="c",
+        language="python",
+    )
+    # Assert
+    assert isinstance(msg, Message)
+
+
+def test_apply_result_confirmed():
+    # Arrange / Act
+    msg = ApplyResult(confirmed=True, files_written=[])
+    # Assert
+    assert msg.confirmed is True
+
+
+def test_apply_result_files_written():
+    # Arrange / Act
+    msg = ApplyResult(confirmed=False, files_written=["a.py"])
+    # Assert
+    assert msg.files_written == ["a.py"]
+
+
+def test_apply_result_is_message():
+    # Arrange / Act
+    msg = ApplyResult(confirmed=True, files_written=["src/foo.py"])
+    # Assert
+    assert isinstance(msg, Message)
