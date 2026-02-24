@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 4 of 5 (Flow Control and Code Apply — in progress)
-Plan: 4 of 6 in current phase
-Status: Phase 4 in progress — 04-01, 04-02, 04-03, 04-04 complete; 04-05, 04-06 remaining
-Last activity: 2026-02-24 — 04-04: ReconciliationPanel widget, StatusBar Phase 4 methods, Phase 4 CSS; 117 tests green
+Plan: 5 of 6 in current phase
+Status: Phase 4 in progress — 04-01, 04-02, 04-03, 04-04, 04-05 complete; 04-06 remaining
+Last activity: 2026-02-24 — 04-05: AgentBureauApp Phase 4 integration: flow picker, debate, reconciliation, apply-confirm; 126 tests green
 
 Progress: [█████████░] 85%
 
@@ -46,6 +46,7 @@ Progress: [█████████░] 85%
 | Phase 04-flow-control-and-code-apply P03 | 15 min | 3 tasks | 2 files |
 | Phase 04-flow-control-and-code-apply P02 | 15 | 3 tasks | 5 files |
 | Phase 04-flow-control-and-code-apply P04 | 20 min | 2 tasks | 4 files |
+| Phase 04-flow-control-and-code-apply P05 | 9 min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -98,6 +99,9 @@ Recent decisions affecting current work:
 - [04-04]: Phase 4 CSS appended to styles.tcss with clear comment marker — Phase 3 rules unchanged (OCP compliance)
 - [04-04]: show_debating signature is (round_num, max_rounds) — both params needed to render "round N/M" in status text
 - [04-04]: StatusBar Phase 4 methods appended after existing methods — existing methods left unchanged (OCP)
+- [Phase 04-05]: watch_session_state updated to disable input for all non-IDLE states — simpler correct pattern for Phase 4
+- [Phase 04-05]: action_end_debate uses callback form push_screen (not await) — action handlers cannot use wait_for_dismiss=True
+- [Phase 04-05]: Static.render() used for status bar text assertions — .renderable removed in Textual 8.x
 
 ### Pending Todos
 
@@ -112,5 +116,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Completed 04-04-PLAN.md — ReconciliationPanel widget, StatusBar Phase 4 methods, Phase 4 CSS; 117 tests green
+Stopped at: Completed 04-05-PLAN.md — AgentBureauApp Phase 4 integration: flow picker, debate, reconciliation, apply-confirm; 126 tests green
 Resume file: None
