@@ -22,7 +22,7 @@
 - [x] **ORCH-01**: User is prompted at the start of each session to choose a flow: pick-one or live-debate
 - [x] **ORCH-02**: Both agents run in parallel from the moment the prompt is submitted
 - [x] **ORCH-03**: Disagreements between agents are visualized in the TUI (approach, facts, confidence gap)
-- [ ] **ORCH-04**: In live-debate mode, user watches each round of agent exchange stream in real time
+- [x] **ORCH-04**: In live-debate mode, user watches each round of agent exchange stream in real time
 - [x] **ORCH-05**: In live-debate mode, user controls when to end the debate (keypress)
 - [x] **ORCH-06**: State machine gates all transitions — streaming completes before any apply step begins
 
@@ -94,7 +94,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ORCH-01 | Phase 4 | Complete |
 | ORCH-02 | Phase 3 | Complete |
 | ORCH-03 | Phase 3 | Complete |
-| ORCH-04 | Phase 4 | Pending |
+| ORCH-04 | Phase 4 | Complete |
 | ORCH-05 | Phase 4 | Complete |
 | ORCH-06 | Phase 3 | Complete |
 | APPLY-01 | Phase 4 | Complete |
