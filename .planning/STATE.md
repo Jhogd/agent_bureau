@@ -94,6 +94,10 @@ Recent decisions affecting current work:
 - [Phase 04-flow-control-and-code-apply]: Option imported from textual.widgets._option_list — Textual 8 public namespace does not export Option directly
 - [Phase 04-flow-control-and-code-apply]: FlowPickerScreen Ctrl+C uses priority=True binding to quit app without trapping user in modal
 - [Phase 04-flow-control-and-code-apply]: y/n/escape Binding pattern used for bool-dismiss modals (ConfirmEndDebateScreen, ApplyConfirmScreen) — no OptionList needed
+- [04-04]: ReconciliationPanel uses DEFAULT_CSS for self-contained styling — no styles.tcss entry needed for the widget itself
+- [04-04]: Phase 4 CSS appended to styles.tcss with clear comment marker — Phase 3 rules unchanged (OCP compliance)
+- [04-04]: show_debating signature is (round_num, max_rounds) — both params needed to render "round N/M" in status text
+- [04-04]: StatusBar Phase 4 methods appended after existing methods — existing methods left unchanged (OCP)
 
 ### Pending Todos
 
@@ -108,5 +112,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Completed 04-03-PLAN.md — apply.py module (extract_code_proposals, generate_unified_diff, write_file_atomic) proven via TDD
+Stopped at: Completed 04-04-PLAN.md — ReconciliationPanel widget, StatusBar Phase 4 methods, Phase 4 CSS; 117 tests green
 Resume file: None
