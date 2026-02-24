@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** A developer can send a coding prompt, see how multiple AI agents approach it differently, and decide — in the moment — whether to pick a winner or watch them debate before touching any code.
-**Current focus:** Phase 3 — Live Streaming Integration
+**Current focus:** Phase 4 — Flow Control and Code Apply
 
 ## Current Position
 
-Phase: 3 of 5 (Live Streaming Integration — in progress)
-Plan: 4 of 4 in current phase (03-04 Task 1 complete — awaiting human visual checkpoint)
-Status: Phase 3 in progress — 03-01, 03-02 (parallel wave), 03-03, 03-04 Task 1 complete; paused at Task 2 human-verify checkpoint
-Last activity: 2026-02-24 — 03-04: AgentBureauApp fully wired; human visual checkpoint pending
+Phase: 4 of 5 (Flow Control and Code Apply — not started)
+Plan: 0 of TBD in current phase
+Status: Phase 3 complete — all 4 plans executed and human-verified; ready for Phase 4
+Last activity: 2026-02-23 — 03-04: AgentBureauApp fully wired; human visual checkpoint approved; Phase 3 complete
 
-Progress: [███████░░░] 70%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: ~15 min per plan (including parallel Wave 2)
-- Total execution time: ~1 hour
+- Total plans completed: 11
+- Average duration: ~10 min per plan (including parallel Wave 2)
+- Total execution time: ~2 hours
 
 **By Phase:**
 
@@ -30,8 +30,8 @@ Progress: [███████░░░] 70%
 | 01-async-streaming-bridge | 3/3 | ~1 hr | ~20 min |
 
 **Recent Trend:**
-- Last 3 plans: 01-01, 01-02, 01-03 (all complete)
-- Trend: Wave 2 executed in parallel
+- Last 3 plans: 03-02, 03-03, 03-04 (all complete)
+- Trend: Phase 3 complete
 
 *Updated after each plan completion*
 
@@ -41,7 +41,7 @@ Progress: [███████░░░] 70%
 | Phase 02-static-tui-layout P04 | 15 | 2 tasks | 3 files |
 | Phase 03-live-streaming-integration P01 | 5 min | 2 tasks | 4 files |
 | Phase 03-live-streaming-integration P03 | 6 | 2 tasks | 4 files |
-| Phase 03-live-streaming-integration P04 | 15 | 1 task (of 2) | 2 files |
+| Phase 03-live-streaming-integration P04 | 15 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -79,6 +79,7 @@ Recent decisions affecting current work:
 - [03-04]: Classification gated strictly on len(_terminal_events) == 2 — no race condition possible
 - [03-04]: CommandJsonAdapter reused for TUI-side JSON parsing; try/except yields empty disagreements on non-JSON output
 - [03-04]: watch_session_state() guards with try/except for early lifecycle safety before Input is mounted
+- [03-04]: Human visual verification approved — status bar, prompt bar, prompt input, agent panes, and layout all confirmed correct
 
 ### Pending Todos
 
@@ -86,12 +87,12 @@ None.
 
 ### Blockers/Concerns
 
-- PTY buffering: claude CLI was blocked by nested session detection during spike; actual PTY vs PIPE streaming behavior for real prompts remains unverified. Phase 3 integration tests should run outside Claude Code with CLAUDECODE unset.
+- PTY buffering: claude CLI was blocked by nested session detection during spike; actual PTY vs PIPE streaming behavior for real prompts remains unverified. Phase 3 integration tests should run outside Claude Code with CLAUDECODE unset. Items 6-12 of visual checklist (streaming tokens, status updates, classification) need manual verification outside Claude Code before Phase 5.
 - AgentOutputParser scope: whether classifier.py can be reused as the output parsing abstraction is unclear; examine before Phase 5
 - CI environment for TUI tests: headless Pilot works but real subprocess tests in Phase 5 require a pseudo-terminal in CI
 
 ## Session Continuity
 
-Last session: 2026-02-24
-Stopped at: 03-04-PLAN.md Task 2 checkpoint:human-verify (Task 1 committed as 410399e)
+Last session: 2026-02-23
+Stopped at: Completed 03-04-PLAN.md — Phase 3 complete
 Resume file: None

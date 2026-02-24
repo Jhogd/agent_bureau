@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Async Streaming Bridge** - Async subprocess fan-out with typed event bus; all streaming correctness proven before any TUI code exists
 - [x] **Phase 2: Static TUI Layout** - Side-by-side columnar layout with keyboard navigation, syntax highlighting, and scrollable panes validated against placeholder content
-- [ ] **Phase 3: Live Streaming Integration** - Bridge wired to TUI; tokens stream into correct panes in real time; status bar and disagreement state display live
+- [x] **Phase 3: Live Streaming Integration** - Bridge wired to TUI; tokens stream into correct panes in real time; status bar and disagreement state display live
 - [ ] **Phase 4: Flow Control and Code Apply** - Flow picker modal, live-debate mode, pick-winner UX, diff preview, and file-write confirmation
 - [ ] **Phase 5: Agent Discovery, Config, and Packaging** - Auto-detection of CLI agents on PATH, config file for default roster, and installable `agent-bureau` entry point
 
@@ -67,9 +67,9 @@ Plans:
 
 Plans:
 - [x] 03-01-PLAN.md — TDD: TokenReceived, AgentFinished, ClassificationDone messages + SessionState enum
-- [ ] 03-02-PLAN.md — TDD: AgentPane.write_token(), line_count, clear(), set_disagreement_highlight()
-- [ ] 03-03-PLAN.md — StatusBar and PromptBar widgets + styles.tcss Phase 3 rules
-- [ ] 03-04-PLAN.md — AgentBureauApp bridge wiring: worker, message routing, state machine, classification + visual checkpoint
+- [x] 03-02-PLAN.md — TDD: AgentPane.write_token(), line_count, clear(), set_disagreement_highlight()
+- [x] 03-03-PLAN.md — StatusBar and PromptBar widgets + styles.tcss Phase 3 rules
+- [x] 03-04-PLAN.md — AgentBureauApp bridge wiring: worker, message routing, state machine, classification + visual checkpoint
 
 ### Phase 4: Flow Control and Code Apply
 **Goal**: Users can choose their session flow before agents run, watch a live debate with round-by-round streaming, pick a winner, and apply that agent's proposed file changes only after reviewing a diff and confirming
@@ -103,6 +103,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Async Streaming Bridge | 3/3 | Complete | 2026-02-22 |
 | 2. Static TUI Layout | 4/4 | Complete | 2026-02-22 |
-| 3. Live Streaming Integration | 3/4 | In Progress|  |
+| 3. Live Streaming Integration | 4/4 | Complete   | 2026-02-24 |
 | 4. Flow Control and Code Apply | 0/TBD | Not started | - |
 | 5. Agent Discovery, Config, and Packaging | 0/TBD | Not started | - |

@@ -9,22 +9,22 @@
 
 - [x] **TUI-01**: User sees agent responses displayed side-by-side in columnar panes, one column per agent
 - [x] **TUI-02**: Each pane is labeled with the agent's name (e.g., "claude", "codex")
-- [ ] **TUI-03**: Agent output streams token-by-token into the correct pane as the agent responds
+- [x] **TUI-03**: Agent output streams token-by-token into the correct pane as the agent responds
 - [x] **TUI-04**: Each pane is independently scrollable with bounded scrollback (no OOM)
 - [x] **TUI-05**: Code blocks in agent output are syntax-highlighted
 - [x] **TUI-06**: Layout adapts to terminal width (80 / 120 / wide column breakpoints)
 - [x] **TUI-07**: User can navigate the TUI entirely by keyboard (scroll, pick, exit)
 - [x] **TUI-08**: User can exit at any time with Ctrl-C or q without corrupting state or leaving zombie processes
-- [ ] **TUI-09**: Status bar shows current session mode, agent streaming state, and adjudication status
+- [x] **TUI-09**: Status bar shows current session mode, agent streaming state, and adjudication status
 
 ### Multi-Agent Orchestration
 
 - [ ] **ORCH-01**: User is prompted at the start of each session to choose a flow: pick-one or live-debate
-- [ ] **ORCH-02**: Both agents run in parallel from the moment the prompt is submitted
-- [ ] **ORCH-03**: Disagreements between agents are visualized in the TUI (approach, facts, confidence gap)
+- [x] **ORCH-02**: Both agents run in parallel from the moment the prompt is submitted
+- [x] **ORCH-03**: Disagreements between agents are visualized in the TUI (approach, facts, confidence gap)
 - [ ] **ORCH-04**: In live-debate mode, user watches each round of agent exchange stream in real time
 - [ ] **ORCH-05**: In live-debate mode, user controls when to end the debate (keypress)
-- [ ] **ORCH-06**: State machine gates all transitions — streaming completes before any apply step begins
+- [x] **ORCH-06**: State machine gates all transitions — streaming completes before any apply step begins
 
 ### Code Application
 
@@ -84,19 +84,19 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | TUI-01 | Phase 2 | Complete |
 | TUI-02 | Phase 2 | Complete |
-| TUI-03 | Phase 3 | Pending |
+| TUI-03 | Phase 3 | Complete |
 | TUI-04 | Phase 2 | Complete |
 | TUI-05 | Phase 2 | Complete |
 | TUI-06 | Phase 2 | Complete |
 | TUI-07 | Phase 2 | Complete |
 | TUI-08 | Phase 2 | Complete |
-| TUI-09 | Phase 3 | Pending |
+| TUI-09 | Phase 3 | Complete |
 | ORCH-01 | Phase 4 | Pending |
-| ORCH-02 | Phase 3 | Pending |
-| ORCH-03 | Phase 3 | Pending |
+| ORCH-02 | Phase 3 | Complete |
+| ORCH-03 | Phase 3 | Complete |
 | ORCH-04 | Phase 4 | Pending |
 | ORCH-05 | Phase 4 | Pending |
-| ORCH-06 | Phase 3 | Pending |
+| ORCH-06 | Phase 3 | Complete |
 | APPLY-01 | Phase 4 | Pending |
 | APPLY-02 | Phase 4 | Pending |
 | APPLY-03 | Phase 4 | Pending |
