@@ -51,8 +51,8 @@ async def test_show_reconciliation_writes_discussion():
         panel.show_reconciliation("This is the discussion text.", "--- a\n+++ b\n@@ -1 +1 @@\n-old\n+new")
         await pilot.pause()
         log = panel.query_one("#recon-log", RichLog)
-        # Assert — the log should have content (line_count > 0)
-        assert log.line_count > 0
+        # Assert — the log should have content (lines list populated)
+        assert len(log.lines) > 0
 
 
 @pytest.mark.asyncio
@@ -67,7 +67,7 @@ async def test_show_reconciliation_no_diff_shows_placeholder():
         await pilot.pause()
         log = panel.query_one("#recon-log", RichLog)
         # Assert — log has output (the placeholder message was written)
-        assert log.line_count > 0
+        assert len(log.lines) > 0
         # The panel should also be visible
         assert panel.display is True
 
