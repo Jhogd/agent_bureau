@@ -81,7 +81,15 @@ Plans:
   3. When an agent proposes file changes, user sees a diff preview before any file is written
   4. User must press an explicit confirmation key before any file is written to disk; no file is ever written without this step
   5. In pick-winner flow, user can select which agent's proposed changes to apply
-**Plans**: TBD
+**Plans**: 6 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — TDD: Phase 4 SessionState states (FLOW_PICK, DEBATING, PICK_WINNER, RECONCILING, CONFIRMING_APPLY) + messages (RoundBoundary, DebateEnded, ReconciliationReady, ApplyResult)
+- [ ] 04-02-PLAN.md — TDD: Four modal screens (FlowPickerScreen, WinnerPickerScreen, ConfirmEndDebateScreen, ApplyConfirmScreen)
+- [ ] 04-03-PLAN.md — TDD: apply.py module (extract_code_proposals, generate_unified_diff, write_file_atomic)
+- [ ] 04-04-PLAN.md — ReconciliationPanel widget + StatusBar Phase 4 methods + styles.tcss Phase 4 rules
+- [ ] 04-05-PLAN.md — AgentBureauApp Phase 4 wiring: flow picker, debate loop, winner picker, reconciliation, apply gate + integration tests
+- [ ] 04-06-PLAN.md — Human visual verification of all Phase 4 flows
 
 ### Phase 5: Agent Discovery, Config, and Packaging
 **Goal**: Agent Bureau detects installed CLI agents automatically, remembers a preferred roster via config file, and installs cleanly on macOS and Linux with a single command
@@ -104,5 +112,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Async Streaming Bridge | 3/3 | Complete | 2026-02-22 |
 | 2. Static TUI Layout | 4/4 | Complete | 2026-02-22 |
 | 3. Live Streaming Integration | 4/4 | Complete    | 2026-02-24 |
-| 4. Flow Control and Code Apply | 0/TBD | Not started | - |
+| 4. Flow Control and Code Apply | 0/6 | Not started | - |
 | 5. Agent Discovery, Config, and Packaging | 0/TBD | Not started | - |
