@@ -109,3 +109,63 @@ AgentPane.disagreement #header {
     background: $warning-darken-1;
     color: $text;
 }
+
+/* ─── Phase 4: Flow Control and Code Apply ──────────────────────────────── */
+
+FlowPickerScreen {
+    align: left top;
+    background: rgba(0, 0, 0, 0);
+}
+
+FlowPickerScreen #banner {
+    width: 100%;
+    height: auto;
+    background: $panel-darken-2;
+    padding: 0 1;
+}
+
+FlowPickerScreen #flow-options {
+    width: 100%;
+    height: auto;
+    border: none;
+    padding: 0;
+}
+
+WinnerPickerScreen {
+    align: center middle;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+WinnerPickerScreen #winner-dialog {
+    width: 60;
+    height: auto;
+    background: $surface;
+    border: thick $background 80%;
+    padding: 1 2;
+}
+
+ConfirmEndDebateScreen {
+    align: center middle;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+ConfirmEndDebateScreen #confirm-dialog {
+    width: 50;
+    height: 5;
+    background: $surface;
+    border: thick $background 80%;
+    padding: 1 2;
+}
+
+ApplyConfirmScreen {
+    align: center middle;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+ApplyConfirmScreen #apply-dialog {
+    width: 65;
+    height: 7;
+    background: $surface;
+    border: thick $background 80%;
+    padding: 1 2;
+}
