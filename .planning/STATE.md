@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** A developer can send a coding prompt, see how multiple AI agents approach it differently, and decide — in the moment — whether to pick a winner or watch them debate before touching any code.
-**Current focus:** Phase 2 — Static TUI Layout
+**Current focus:** Phase 3 — Live Streaming Integration
 
 ## Current Position
 
-Phase: 2 of 5 (Static TUI Layout — complete)
-Plan: 4 of 4 in current phase (phase complete — ready for Phase 3)
-Status: Phase 2 complete — AgentBureauApp assembled, 13 integration tests pass, human visual checkpoint approved
-Last activity: 2026-02-22 — 02-04: AgentBureauApp wired, human visual sign-off on all 8 checks, dialog padding fix applied
+Phase: 3 of 5 (Live Streaming Integration — in progress)
+Plan: 3 of 4 in current phase (03-03 complete — StatusBar, PromptBar, Phase 3 CSS rules)
+Status: Phase 3 in progress — 03-01, 03-02 (parallel wave), 03-03 complete; 03-04 (AgentBureauApp integration) remaining
+Last activity: 2026-02-24 — 03-03: StatusBar, PromptBar widgets and styles.tcss Phase 3 rules added
 
-Progress: [█████░░░░░] 50%
+Progress: [██████░░░░] 60%
 
 ## Performance Metrics
 
@@ -39,6 +39,8 @@ Progress: [█████░░░░░] 50%
 | Phase 02-static-tui-layout P02 | 3 min | 2 tasks | 2 files |
 | Phase 02-static-tui-layout P03 | 3 min | 2 tasks | 6 files |
 | Phase 02-static-tui-layout P04 | 15 | 2 tasks | 3 files |
+| Phase 03-live-streaming-integration P01 | 5 min | 2 tasks | 4 files |
+| Phase 03-live-streaming-integration P03 | 6 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -66,6 +68,12 @@ Recent decisions affecting current work:
 - [Phase 02-static-tui-layout]: No up/down bindings at App level — AgentPane handles scroll independently to avoid cross-pane scrolling
 - [Phase 02-static-tui-layout]: ctrl+c uses priority=True to intercept before Textual built-in quit and show QuitScreen dialog
 - [02-04]: Dialog padding set to 1 4 and buttons to width: 100% — human visual review flagged left-aligned Quit/Cancel buttons; fix confirmed by user
+- [03-01]: @dataclass decorator applied to Message subclasses — clean field declaration, matches plan spec exactly
+- [03-01]: BridgeEvent union type annotated on AgentFinished.event — explicit typed link between bridge and TUI layers
+- [03-01]: tests/tui/__init__.py intentionally absent — prevents src/tui/ shadowing in pytest sys.path (Phase 01-02 pitfall confirmed again)
+- [Phase 03-03]: StatusBar uses Static.update() for state-driven text changes — no Textual reactive needed; explicit call from AgentBureauApp
+- [Phase 03-03]: PromptBar is layout-only; Input.Submitted handling intentionally left to AgentBureauApp (SRP)
+- [Phase 03-03]: Phase 3 CSS rules appended to styles.tcss without modifying existing rules (OCP compliance)
 
 ### Pending Todos
 
@@ -79,6 +87,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-22
-Stopped at: Completed 02-04-PLAN.md (Phase 2 complete)
+Last session: 2026-02-24
+Stopped at: Completed 03-03-PLAN.md (StatusBar, PromptBar, Phase 3 CSS rules)
 Resume file: None

@@ -66,7 +66,7 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — TDD: TokenReceived, AgentFinished, ClassificationDone messages + SessionState enum
+- [x] 03-01-PLAN.md — TDD: TokenReceived, AgentFinished, ClassificationDone messages + SessionState enum
 - [ ] 03-02-PLAN.md — TDD: AgentPane.write_token(), line_count, clear(), set_disagreement_highlight()
 - [ ] 03-03-PLAN.md — StatusBar and PromptBar widgets + styles.tcss Phase 3 rules
 - [ ] 03-04-PLAN.md — AgentBureauApp bridge wiring: worker, message routing, state machine, classification + visual checkpoint
@@ -103,6 +103,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Async Streaming Bridge | 3/3 | Complete | 2026-02-22 |
 | 2. Static TUI Layout | 4/4 | Complete | 2026-02-22 |
-| 3. Live Streaming Integration | 0/4 | Not started | - |
+| 3. Live Streaming Integration | 3/4 | In Progress|  |
 | 4. Flow Control and Code Apply | 0/TBD | Not started | - |
 | 5. Agent Discovery, Config, and Packaging | 0/TBD | Not started | - |
