@@ -63,7 +63,13 @@ Plans:
   2. The status bar updates in real time: it shows which agents are still streaming, when all agents are done, and when a disagreement has been classified
   3. Disagreements between agents are visually indicated in the TUI (type label: approach / facts / confidence_gap)
   4. The apply step cannot begin while any agent subprocess is still running or its queue is unread; the state machine enforces this
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — TDD: TokenReceived, AgentFinished, ClassificationDone messages + SessionState enum
+- [ ] 03-02-PLAN.md — TDD: AgentPane.write_token(), line_count, clear(), set_disagreement_highlight()
+- [ ] 03-03-PLAN.md — StatusBar and PromptBar widgets + styles.tcss Phase 3 rules
+- [ ] 03-04-PLAN.md — AgentBureauApp bridge wiring: worker, message routing, state machine, classification + visual checkpoint
 
 ### Phase 4: Flow Control and Code Apply
 **Goal**: Users can choose their session flow before agents run, watch a live debate with round-by-round streaming, pick a winner, and apply that agent's proposed file changes only after reviewing a diff and confirming
@@ -97,6 +103,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Async Streaming Bridge | 3/3 | Complete | 2026-02-22 |
 | 2. Static TUI Layout | 4/4 | Complete | 2026-02-22 |
-| 3. Live Streaming Integration | 0/TBD | Not started | - |
+| 3. Live Streaming Integration | 0/4 | Not started | - |
 | 4. Flow Control and Code Apply | 0/TBD | Not started | - |
 | 5. Agent Discovery, Config, and Packaging | 0/TBD | Not started | - |
