@@ -78,3 +78,34 @@ QuitScreen {
     width: 1fr;
     content-align: center bottom;
 }
+
+/* ===== Phase 3 additions ===== */
+
+/* Status bar — one line at the very top, above agent panes */
+#status-bar {
+    height: 1;
+    background: $panel-darken-2;
+    color: $text-muted;
+    content-align: left middle;
+    padding: 0 1;
+    dock: top;
+}
+
+/* Prompt input bar — one line at the bottom, below agent panes */
+#prompt-bar {
+    height: 1;
+    dock: bottom;
+    background: $surface-darken-1;
+}
+
+#prompt-bar Input {
+    background: $surface-darken-1;
+    border: none;
+    height: 1;
+}
+
+/* Disagreement highlight — pane header changes color when agents disagree */
+AgentPane.disagreement #header {
+    background: $warning-darken-1;
+    color: $text;
+}
