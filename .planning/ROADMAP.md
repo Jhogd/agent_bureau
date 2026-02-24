@@ -84,7 +84,7 @@ Plans:
 **Plans**: 6 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — TDD: Phase 4 SessionState states (FLOW_PICK, DEBATING, PICK_WINNER, RECONCILING, CONFIRMING_APPLY) + messages (RoundBoundary, DebateEnded, ReconciliationReady, ApplyResult)
+- [x] 04-01-PLAN.md — TDD: Phase 4 SessionState states (FLOW_PICK, DEBATING, PICK_WINNER, RECONCILING, CONFIRMING_APPLY) + messages (RoundBoundary, DebateEnded, ReconciliationReady, ApplyResult)
 - [ ] 04-02-PLAN.md — TDD: Four modal screens (FlowPickerScreen, WinnerPickerScreen, ConfirmEndDebateScreen, ApplyConfirmScreen)
 - [ ] 04-03-PLAN.md — TDD: apply.py module (extract_code_proposals, generate_unified_diff, write_file_atomic)
 - [ ] 04-04-PLAN.md — ReconciliationPanel widget + StatusBar Phase 4 methods + styles.tcss Phase 4 rules
@@ -112,5 +112,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Async Streaming Bridge | 3/3 | Complete | 2026-02-22 |
 | 2. Static TUI Layout | 4/4 | Complete | 2026-02-22 |
 | 3. Live Streaming Integration | 4/4 | Complete    | 2026-02-24 |
-| 4. Flow Control and Code Apply | 0/6 | Not started | - |
+| 4. Flow Control and Code Apply | 2/6 | In Progress|  |
 | 5. Agent Discovery, Config, and Packaging | 0/TBD | Not started | - |

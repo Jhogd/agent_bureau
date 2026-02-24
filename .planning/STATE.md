@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 
 ## Current Position
 
-Phase: 4 of 5 (Flow Control and Code Apply — not started)
-Plan: 0 of TBD in current phase
-Status: Phase 3 complete — all 4 plans executed and human-verified; ready for Phase 4
-Last activity: 2026-02-23 — 03-04: AgentBureauApp fully wired; human visual checkpoint approved; Phase 3 complete
+Phase: 4 of 5 (Flow Control and Code Apply — in progress)
+Plan: 3 of 6 in current phase
+Status: Phase 4 in progress — 04-01 and 04-03 complete; 04-02, 04-04, 04-05, 04-06 remaining
+Last activity: 2026-02-24 — 04-03: apply.py (extract_code_proposals, generate_unified_diff, write_file_atomic) proven via TDD; 13 tests green
 
-Progress: [████████░░] 80%
+Progress: [████████░░] 82%
 
 ## Performance Metrics
 
@@ -42,6 +42,8 @@ Progress: [████████░░] 80%
 | Phase 03-live-streaming-integration P01 | 5 min | 2 tasks | 4 files |
 | Phase 03-live-streaming-integration P03 | 6 | 2 tasks | 4 files |
 | Phase 03-live-streaming-integration P04 | 15 | 2 tasks | 2 files |
+| Phase 04-flow-control-and-code-apply P01 | 15 min | 3 tasks | 4 files |
+| Phase 04-flow-control-and-code-apply P03 | 15 min | 3 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -80,6 +82,13 @@ Recent decisions affecting current work:
 - [03-04]: CommandJsonAdapter reused for TUI-side JSON parsing; try/except yields empty disagreements on non-JSON output
 - [03-04]: watch_session_state() guards with try/except for early lifecycle safety before Input is mounted
 - [03-04]: Human visual verification approved — status bar, prompt bar, prompt input, agent panes, and layout all confirmed correct
+- [04-01]: @dataclass applied to all Phase 4 Message subclasses — matches Phase 3 pattern exactly; clean field declaration with no boilerplate
+- [04-01]: Phase 4 SessionState states appended after DONE using auto() — preserves existing integer values, satisfies OCP; no Phase 3 state was modified or reordered
+- [04-01]: DebateEnded() takes no fields — pure signal event; no payload needed by consuming state machine transition
+- [04-01]: list[str] used for ApplyResult.files_written — built-in generic, no extra imports needed
+- [04-03]: write_file_atomic uses mkstemp(dir=target.parent) not /tmp — POSIX os.rename() is only atomic within the same filesystem
+- [04-03]: generate_unified_diff uses splitlines(keepends=True) — avoids trailing-newline omission pitfall in difflib output
+- [04-03]: FILE_COMMENT only matches first code line — subsequent comment lines are valid code and must not be stripped
 
 ### Pending Todos
 
@@ -93,6 +102,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-23
-Stopped at: Completed 03-04-PLAN.md — Phase 3 complete
+Last session: 2026-02-24
+Stopped at: Completed 04-03-PLAN.md — apply.py module (extract_code_proposals, generate_unified_diff, write_file_atomic) proven via TDD
 Resume file: None
