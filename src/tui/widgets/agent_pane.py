@@ -1,4 +1,6 @@
 """AgentPane widget — a labeled, independently scrollable pane for agent output."""
+from rich.ansi import AnsiDecoder
+from rich.text import Text
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.widget import Widget
@@ -21,6 +23,7 @@ class AgentPane(Widget):
     """
 
     can_focus = True
+    _ansi_decoder = AnsiDecoder()
 
     BINDINGS = [
         Binding("up", "scroll_up", "Scroll up", show=False),
@@ -32,6 +35,7 @@ class AgentPane(Widget):
     def __init__(self, agent_name: str, **kwargs) -> None:
         self.agent_name = agent_name
         self._has_content = False
+        self._line_count: int = 0
         super().__init__(**kwargs)
 
     def compose(self) -> ComposeResult:
@@ -57,6 +61,46 @@ class AgentPane(Widget):
             self.query_one("#placeholder", Label).display = False
             log.display = True
         write_content_to_pane(log, text)
+
+    @property
+    def line_count(self) -> int:
+        """Number of lines written via write_token()."""
+        return self._line_count
+
+    def write_token(self, line: str) -> None:
+        """Write a single streamed token line to the RichLog.
+
+        Decodes ANSI escape sequences before writing so Rich does not
+        interpret them as markup. Increments the internal line counter.
+        """
+        log = self.query_one("#content", RichLog)
+        if not self._has_content:
+            self._has_content = True
+            self.query_one("#placeholder", Label).display = False
+            log.display = True
+        # Use next() with a fallback so an empty line doesn't crash.
+        rich_text = next(self._ansi_decoder.decode(line), Text(line))
+        log.write(rich_text)
+        self._line_count += 1
+
+    def clear(self) -> None:
+        """Reset the pane to its empty state (placeholder visible, RichLog cleared)."""
+        log = self.query_one("#content", RichLog)
+        log.clear()
+        log.display = False
+        self.query_one("#placeholder", Label).display = True
+        self._has_content = False
+        self._line_count = 0
+
+    def set_disagreement_highlight(self, active: bool) -> None:
+        """Add or remove the 'disagreement' CSS class on this pane.
+
+        When active=True, the pane header changes color (per styles.tcss).
+        """
+        if active:
+            self.add_class("disagreement")
+        else:
+            self.remove_class("disagreement")
 
     def action_scroll_up(self) -> None:
         self.query_one("#content", RichLog).scroll_up(animate=False)
