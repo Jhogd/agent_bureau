@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 3 of 5 (Live Streaming Integration — in progress)
-Plan: 3 of 4 in current phase (03-03 complete — StatusBar, PromptBar, Phase 3 CSS rules)
-Status: Phase 3 in progress — 03-01, 03-02 (parallel wave), 03-03 complete; 03-04 (AgentBureauApp integration) remaining
-Last activity: 2026-02-24 — 03-03: StatusBar, PromptBar widgets and styles.tcss Phase 3 rules added
+Plan: 4 of 4 in current phase (03-04 Task 1 complete — awaiting human visual checkpoint)
+Status: Phase 3 in progress — 03-01, 03-02 (parallel wave), 03-03, 03-04 Task 1 complete; paused at Task 2 human-verify checkpoint
+Last activity: 2026-02-24 — 03-04: AgentBureauApp fully wired; human visual checkpoint pending
 
-Progress: [██████░░░░] 60%
+Progress: [███████░░░] 70%
 
 ## Performance Metrics
 
@@ -41,6 +41,7 @@ Progress: [██████░░░░] 60%
 | Phase 02-static-tui-layout P04 | 15 | 2 tasks | 3 files |
 | Phase 03-live-streaming-integration P01 | 5 min | 2 tasks | 4 files |
 | Phase 03-live-streaming-integration P03 | 6 | 2 tasks | 4 files |
+| Phase 03-live-streaming-integration P04 | 15 | 1 task (of 2) | 2 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,10 @@ Recent decisions affecting current work:
 - [Phase 03-03]: StatusBar uses Static.update() for state-driven text changes — no Textual reactive needed; explicit call from AgentBureauApp
 - [Phase 03-03]: PromptBar is layout-only; Input.Submitted handling intentionally left to AgentBureauApp (SRP)
 - [Phase 03-03]: Phase 3 CSS rules appended to styles.tcss without modifying existing rules (OCP compliance)
+- [03-04]: _run_session uses post_message() exclusively — no direct widget calls from async worker (thread safety per RESEARCH.md)
+- [03-04]: Classification gated strictly on len(_terminal_events) == 2 — no race condition possible
+- [03-04]: CommandJsonAdapter reused for TUI-side JSON parsing; try/except yields empty disagreements on non-JSON output
+- [03-04]: watch_session_state() guards with try/except for early lifecycle safety before Input is mounted
 
 ### Pending Todos
 
@@ -88,5 +93,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Completed 03-03-PLAN.md (StatusBar, PromptBar, Phase 3 CSS rules)
+Stopped at: 03-04-PLAN.md Task 2 checkpoint:human-verify (Task 1 committed as 410399e)
 Resume file: None
