@@ -112,3 +112,13 @@ None - no external service configuration required.
 ---
 *Phase: 04-flow-control-and-code-apply*
 *Completed: 2026-02-24*
+
+## Self-Check: PASSED
+
+- FOUND: src/tui/apply.py
+- FOUND: tests/tui/test_apply.py
+- FOUND: .planning/phases/04-flow-control-and-code-apply/04-03-SUMMARY.md
+- FOUND: commit ecd9eae (test(04-03): add failing tests for apply module)
+- FOUND: commit aa03373 (feat(04-03): implement apply module with extract, diff, and atomic write)
+- 13 tests passed (pytest tests/tui/test_apply.py -v)
+- 107 tests passed (full suite, no regressions)
