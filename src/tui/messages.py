@@ -42,12 +42,9 @@ class ClassificationDone(Message):
 
 @dataclass
 class ReconciliationReady(Message):
-    """Reconciliation output ready for panel display."""
+    """Both agents finished their reconciliation passes; diff is ready for display."""
 
-    discussion_text: str
     diff_text: str
-    agreed_code: str
-    language: str
 
 
 @dataclass

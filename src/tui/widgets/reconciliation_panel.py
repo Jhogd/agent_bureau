@@ -40,22 +40,19 @@ class ReconciliationPanel(Widget):
         yield Label("Reconciliation", id="recon-header")
         yield RichLog(id="recon-log", highlight=True, markup=True)
 
-    def show_reconciliation(self, discussion: str, diff_text: str) -> None:
-        """Display reconciliation discussion and unified diff. Makes panel visible.
+    def show_reconciliation(self, diff_text: str) -> None:
+        """Display unified diff between the two reconciliation proposals. Makes panel visible.
 
         Args:
-            discussion: Plain-text discussion from the reconciliation agent.
             diff_text: Unified diff string (may be empty if proposals are identical).
         """
         self.display = True
         log = self.query_one("#recon-log", RichLog)
         log.clear()
-        if discussion:
-            log.write(discussion)
         if diff_text.strip():
             log.write(Syntax(diff_text, "diff", theme="monokai", background_color="default"))
         else:
-            log.write("[dim]No code differences detected — proposals are identical.[/dim]")
+            log.write("[dim]No code differences — both reconciliations are identical.[/dim]")
 
     def hide_panel(self) -> None:
         """Hide the panel and clear content (call on session reset)."""

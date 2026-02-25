@@ -22,7 +22,7 @@ class ReviewBar(Widget):
     }
     """
 
-    _HINT = "[r] Reconcile again  •  [c] Accept Claude  •  [x] Accept Codex  •  [y] Apply reconciled"
+    _HINT = "[r] Reconcile further  •  [c] Apply Claude  •  [x] Apply Codex"
 
     def compose(self) -> ComposeResult:
         yield Static(self._HINT)

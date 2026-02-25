@@ -9,15 +9,19 @@ Layout (top to bottom):
 
 Flow:
   User submits prompt → both agents stream simultaneously → classification →
-  auto-reconciliation → ReviewBar appears with options:
-    [r] Reconcile again  [c] Accept Claude  [x] Accept Codex  [y] Apply reconciled
+  auto-reconciliation (each agent sees the other's response and proposes a
+  unified solution) → ReviewBar appears with options:
+    [r] Reconcile further  [c] Apply Claude  [x] Apply Codex
+
+  "Reconcile further" feeds the reconciliation outputs back as new inputs,
+  so each subsequent round is cross-reviewing the previous reconciliation.
 
 Keyboard bindings:
   left / right  — switch pane focus
   q             — exit immediately
   ctrl+c        — push QuitScreen confirmation dialog
   ctrl+l        — clear both panes and reset
-  r / c / x / y — review actions (only active during REVIEWING state)
+  r / c / x     — review actions (only active during REVIEWING state)
 """
 from __future__ import annotations
 
@@ -58,10 +62,9 @@ class AgentBureauApp(App):
         Binding("ctrl+c", "confirm_quit", "Exit", priority=True),
         Binding("ctrl+l", "clear_panes", "Clear", show=False),
         # Review actions — only honoured when session_state == REVIEWING
-        Binding("r", "reconcile_again", "Reconcile again", show=False),
-        Binding("c", "accept_claude", "Accept Claude", show=False),
-        Binding("x", "accept_codex", "Accept Codex", show=False),
-        Binding("y", "apply_reconciled", "Apply reconciled", show=False),
+        Binding("r", "reconcile_again", "Reconcile further", show=False),
+        Binding("c", "accept_claude", "Apply Claude", show=False),
+        Binding("x", "accept_codex", "Apply Codex", show=False),
     ]
 
     session_state: reactive[SessionState] = reactive(SessionState.IDLE)
@@ -81,6 +84,7 @@ class AgentBureauApp(App):
         self._terminal_events: dict[str, BridgeEvent] = {}
         self._agent_line_counts: dict[str, int] = {"claude": 0, "codex": 0}
         self._last_texts: dict[str, str] = {}
+        self._recon_proposals: dict[str, object] = {"claude": None, "codex": None}
         self._agreed_code: str = ""
         self._agreed_language: str = "python"
         self._agreed_filename: str | None = None
@@ -105,6 +109,7 @@ class AgentBureauApp(App):
         self._terminal_events = {}
         self._agent_line_counts = {"claude": 0, "codex": 0}
         self._last_texts = {}
+        self._recon_proposals = {"claude": None, "codex": None}
         self._agreed_code = ""
         self._agreed_language = "python"
         self._agreed_filename = None
@@ -156,7 +161,9 @@ class AgentBureauApp(App):
         self._agent_line_counts[message.agent] = (
             self._agent_line_counts.get(message.agent, 0) + 1
         )
-        self.query_one("#status-bar", StatusBar).show_streaming(self._agent_line_counts)
+        # Don't overwrite "Reconciling..." status bar while reconciliation is streaming
+        if self.session_state != SessionState.RECONCILING:
+            self.query_one("#status-bar", StatusBar).show_streaming(self._agent_line_counts)
 
         left = self.query_one("#pane-left", AgentPane)
         right = self.query_one("#pane-right", AgentPane)
@@ -234,66 +241,85 @@ class AgentBureauApp(App):
         )
 
     async def _run_reconciliation(self) -> None:
-        """Worker: send both responses to Claude for unified reconciliation."""
-        from tui.bridge import _stream_pipe, CLAUDE
+        """Worker: each agent sees the other's response and proposes a unified solution.
+
+        Both reconciliation responses stream to their respective panes (with a
+        separator line). After both finish, _last_texts is updated to the
+        reconciliation outputs so that 'reconcile further' naturally feeds those
+        into the next round.
+        """
+        from tui.bridge import _stream_pipe, CLAUDE, CODEX
         from tui.apply import extract_code_proposals, generate_unified_diff
 
         claude_text = self._last_texts.get("claude", "")
         codex_text = self._last_texts.get("codex", "")
 
-        recon_prompt = (
-            f"Here is what Agent A (Claude) proposed:\n{claude_text}\n\n"
-            f"Here is what Agent B (Codex) proposed:\n{codex_text}\n\n"
-            f"These are complementary perspectives. Produce the best unified solution "
-            f"that incorporates the strengths of both. "
-            f"First write a brief plain-language explanation of how you merged the two approaches. "
-            f"Then provide the final code in a fenced code block, with the target filename "
-            f"as the first line comment (e.g. # src/module.py)."
+        separator = "\u2500" * 60
+        self.post_message(TokenReceived(agent="claude", text=separator))
+        self.post_message(TokenReceived(agent="codex", text=separator))
+
+        claude_prompt = (
+            f"You previously proposed:\n{claude_text}\n\n"
+            f"Here is what Codex proposed:\n{codex_text}\n\n"
+            f"Review both approaches. Identify the strengths of each and produce "
+            f"the best unified solution. Write a brief explanation, then provide "
+            f"the final code in a fenced block with the target filename as the "
+            f"first line comment (e.g. # src/module.py)."
+        )
+        codex_prompt = (
+            f"You previously proposed:\n{codex_text}\n\n"
+            f"Here is what Claude proposed:\n{claude_text}\n\n"
+            f"Review both approaches. Identify the strengths of each and produce "
+            f"the best unified solution. Write a brief explanation, then provide "
+            f"the final code in a fenced block with the target filename as the "
+            f"first line comment (e.g. # src/module.py)."
         )
 
-        from tui.event_bus import BridgeEvent as _BridgeEvent
-        q: asyncio.Queue[_BridgeEvent] = asyncio.Queue()
-        task = asyncio.create_task(_stream_pipe(CLAUDE, recon_prompt, 90.0, q))
+        q: asyncio.Queue[BridgeEvent] = asyncio.Queue()
+        collected: dict[str, list[str]] = {"claude": [], "codex": []}
 
-        recon_tokens: list[str] = []
-        while True:
+        task_a = asyncio.create_task(_stream_pipe(CLAUDE, claude_prompt, 90.0, q))
+        task_b = asyncio.create_task(_stream_pipe(CODEX, codex_prompt, 90.0, q))
+
+        terminal_count = 0
+        while terminal_count < 2:
             event = await q.get()
             if event.type == "token":
-                recon_tokens.append(event.text)
+                self.post_message(TokenReceived(agent=event.agent, text=event.text))
+                collected[event.agent].append(event.text)
             elif event.type in ("done", "error", "timeout"):
-                break
-        await task
+                terminal_count += 1
 
-        full_recon = "\n".join(recon_tokens)
-        proposals = extract_code_proposals(full_recon)
-        if proposals:
-            agreed = proposals[-1]
-            self._agreed_code = agreed.code
-            self._agreed_language = agreed.language
-            self._agreed_filename = agreed.filename
-        else:
-            self._agreed_code = ""
-            self._agreed_language = "text"
-            self._agreed_filename = None
+        await asyncio.gather(task_a, task_b)
 
-        claude_proposals = extract_code_proposals(claude_text)
-        original_code = claude_proposals[-1].code if claude_proposals else ""
+        recon_claude = "\n".join(collected["claude"])
+        recon_codex = "\n".join(collected["codex"])
+
+        # Update _last_texts so "reconcile further" builds on these outputs
+        self._last_texts = {"claude": recon_claude, "codex": recon_codex}
+
+        # Extract code proposals for apply actions
+        claude_proposals = extract_code_proposals(recon_claude)
+        codex_proposals = extract_code_proposals(recon_codex)
+        self._recon_proposals = {
+            "claude": claude_proposals[-1] if claude_proposals else None,
+            "codex": codex_proposals[-1] if codex_proposals else None,
+        }
+
+        # Diff between the two reconciliation proposals
+        claude_code = self._recon_proposals["claude"].code if self._recon_proposals["claude"] else recon_claude
+        codex_code = self._recon_proposals["codex"].code if self._recon_proposals["codex"] else recon_codex
         diff_text = generate_unified_diff(
-            original_code, self._agreed_code,
-            fromfile="claude", tofile="reconciled"
+            claude_code, codex_code,
+            fromfile="claude-recon", tofile="codex-recon"
         )
 
-        self.post_message(ReconciliationReady(
-            discussion_text=full_recon,
-            diff_text=diff_text,
-            agreed_code=self._agreed_code,
-            language=self._agreed_language,
-        ))
+        self.post_message(ReconciliationReady(diff_text=diff_text))
 
     def on_reconciliation_ready(self, message: ReconciliationReady) -> None:
         """Show reconciliation panel and review bar."""
         self.query_one("#recon-panel", ReconciliationPanel).show_reconciliation(
-            message.discussion_text, message.diff_text
+            message.diff_text
         )
         self.session_state = SessionState.REVIEWING
         self.query_one("#status-bar", StatusBar).show_reviewing(self._agent_line_counts)
@@ -331,34 +357,30 @@ class AgentBureauApp(App):
     def action_accept_claude(self) -> None:
         if self.session_state != SessionState.REVIEWING:
             return
-        self._set_agreed_from_agent("claude")
+        proposal = self._recon_proposals.get("claude")
+        if proposal is not None:
+            self._agreed_code = proposal.code
+            self._agreed_language = proposal.language
+            self._agreed_filename = proposal.filename
+        else:
+            self._agreed_code = self._last_texts.get("claude", "")
+            self._agreed_language = "text"
+            self._agreed_filename = None
         self._start_apply()
 
     def action_accept_codex(self) -> None:
         if self.session_state != SessionState.REVIEWING:
             return
-        self._set_agreed_from_agent("codex")
-        self._start_apply()
-
-    def action_apply_reconciled(self) -> None:
-        if self.session_state != SessionState.REVIEWING:
-            return
-        self._start_apply()
-
-    def _set_agreed_from_agent(self, agent: str) -> None:
-        """Extract code proposals from one agent's response and store as agreed."""
-        from tui.apply import extract_code_proposals
-        text = self._last_texts.get(agent, "")
-        proposals = extract_code_proposals(text)
-        if proposals:
-            agreed = proposals[-1]
-            self._agreed_code = agreed.code
-            self._agreed_language = agreed.language
-            self._agreed_filename = agreed.filename
+        proposal = self._recon_proposals.get("codex")
+        if proposal is not None:
+            self._agreed_code = proposal.code
+            self._agreed_language = proposal.language
+            self._agreed_filename = proposal.filename
         else:
-            self._agreed_code = ""
+            self._agreed_code = self._last_texts.get("codex", "")
             self._agreed_language = "text"
             self._agreed_filename = None
+        self._start_apply()
 
     def _start_apply(self) -> None:
         self.query_one("#review-bar", ReviewBar).hide()

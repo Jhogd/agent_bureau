@@ -354,12 +354,7 @@ async def test_reconciliation_ready_shows_panel():
         recon_panel = app.query_one("#recon-panel", ReconciliationPanel)
         assert not recon_panel.display
         # Post reconciliation ready message
-        app.post_message(ReconciliationReady(
-            discussion_text="discuss",
-            diff_text="",
-            agreed_code="",
-            language="python",
-        ))
+        app.post_message(ReconciliationReady(diff_text=""))
         await pilot.pause()
         # Panel should now be visible
         assert recon_panel.display
@@ -374,12 +369,7 @@ async def test_reconciliation_ready_shows_review_bar():
         await pilot.pause()
         review_bar = app.query_one("#review-bar", ReviewBar)
         assert not review_bar.display
-        app.post_message(ReconciliationReady(
-            discussion_text="discuss",
-            diff_text="",
-            agreed_code="",
-            language="python",
-        ))
+        app.post_message(ReconciliationReady(diff_text=""))
         await pilot.pause()
         assert review_bar.display
 
@@ -390,12 +380,7 @@ async def test_reconciliation_ready_sets_reviewing_state():
     app = AgentBureauApp()
     async with app.run_test(size=(120, 40)) as pilot:
         await pilot.pause()
-        app.post_message(ReconciliationReady(
-            discussion_text="discuss",
-            diff_text="",
-            agreed_code="",
-            language="python",
-        ))
+        app.post_message(ReconciliationReady(diff_text=""))
         await pilot.pause()
         assert app.session_state == SessionState.REVIEWING
 

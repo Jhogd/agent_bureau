@@ -74,27 +74,14 @@ def test_classification_done_fields():
 
 def test_reconciliation_ready_fields():
     # Arrange / Act
-    msg = ReconciliationReady(
-        discussion_text="discuss",
-        diff_text="diff",
-        agreed_code="code",
-        language="python",
-    )
+    msg = ReconciliationReady(diff_text="--- a\n+++ b\n@@ -1 +1 @@\n-old\n+new")
     # Assert
-    assert msg.discussion_text == "discuss"
-    assert msg.diff_text == "diff"
-    assert msg.agreed_code == "code"
-    assert msg.language == "python"
+    assert msg.diff_text == "--- a\n+++ b\n@@ -1 +1 @@\n-old\n+new"
 
 
 def test_reconciliation_ready_is_message():
     # Arrange / Act
-    msg = ReconciliationReady(
-        discussion_text="d",
-        diff_text="f",
-        agreed_code="c",
-        language="python",
-    )
+    msg = ReconciliationReady(diff_text="")
     # Assert
     assert isinstance(msg, Message)
 

@@ -1,0 +1,2 @@
+[console_scripts]
+agent-bureau = tui.app:main

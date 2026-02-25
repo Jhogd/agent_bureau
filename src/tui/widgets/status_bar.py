@@ -65,7 +65,7 @@ class StatusBar(Static):
 
     def show_reconciling(self) -> None:
         """Update text during agent reconciliation."""
-        self.update("Reconciling — agents comparing proposals...")
+        self.update("Reconciling — each agent reviewing the other's proposal...")
 
     def show_reviewing(self, agent_counts: dict[str, int]) -> None:
         """Update text when reconciliation is done and review bar is active."""

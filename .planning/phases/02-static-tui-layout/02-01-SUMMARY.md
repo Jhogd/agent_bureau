@@ -60,7 +60,7 @@ Each task was committed atomically:
 
 1. **Task 1: Pin textual dependency in pyproject.toml** - `6944d91` (feat)
 
-**Plan metadata:** TBD (docs: complete plan)
+**Plan metadata:** `bb0333e` (docs: complete plan)
 
 ## Files Created/Modified
 - `pyproject.toml` - Added `"textual>=0.80.0,<9"` to `[project] dependencies`
@@ -84,6 +84,14 @@ None - no external service configuration required.
 - textual 8.0.0 is installed and fully importable; all Phase 2 tasks can now `import textual` without additional setup
 - All 23 Phase 1 tests continue to pass — no regressions
 - Ready to proceed to 02-02 (first TUI widget implementation)
+
+## Self-Check: PASSED
+
+- FOUND: `.planning/phases/02-static-tui-layout/02-01-SUMMARY.md`
+- FOUND: `pyproject.toml` with `textual>=0.80.0,<9`
+- FOUND: commit `6944d91` (feat: pin textual)
+- FOUND: commit `bb0333e` (docs: complete plan)
+- FOUND: 23 tests passing
 
 ---
 *Phase: 02-static-tui-layout*

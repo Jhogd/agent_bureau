@@ -34,21 +34,21 @@ async def test_show_reconciliation_makes_visible():
         panel = app.query_one("#panel", ReconciliationPanel)
         assert panel.display is False
         # Act
-        panel.show_reconciliation("some discussion", "--- a\n+++ b\n@@ -1 +1 @@\n-old\n+new")
+        panel.show_reconciliation("--- a\n+++ b\n@@ -1 +1 @@\n-old\n+new")
         await pilot.pause()
         # Assert
         assert panel.display is True
 
 
 @pytest.mark.asyncio
-async def test_show_reconciliation_writes_discussion():
-    """show_reconciliation() writes the discussion text to the RichLog."""
+async def test_show_reconciliation_with_diff_writes_content():
+    """show_reconciliation() with a diff writes content to the RichLog."""
     # Arrange
     app = PanelTestApp()
     async with app.run_test(size=(120, 40)) as pilot:
         panel = app.query_one("#panel", ReconciliationPanel)
         # Act
-        panel.show_reconciliation("This is the discussion text.", "--- a\n+++ b\n@@ -1 +1 @@\n-old\n+new")
+        panel.show_reconciliation("--- a\n+++ b\n@@ -1 +1 @@\n-old\n+new")
         await pilot.pause()
         log = panel.query_one("#recon-log", RichLog)
         # Assert — the log should have content (lines list populated)
@@ -63,7 +63,7 @@ async def test_show_reconciliation_no_diff_shows_placeholder():
     async with app.run_test(size=(120, 40)) as pilot:
         panel = app.query_one("#panel", ReconciliationPanel)
         # Act — pass empty diff
-        panel.show_reconciliation("some discussion", "")
+        panel.show_reconciliation("")
         await pilot.pause()
         log = panel.query_one("#recon-log", RichLog)
         # Assert — log has output (the placeholder message was written)
@@ -79,7 +79,7 @@ async def test_hide_panel_hides_widget():
     app = PanelTestApp()
     async with app.run_test(size=(120, 40)) as pilot:
         panel = app.query_one("#panel", ReconciliationPanel)
-        panel.show_reconciliation("discuss", "--- a\n+++ b\n@@ -1 +1 @@\n-old\n+new")
+        panel.show_reconciliation("--- a\n+++ b\n@@ -1 +1 @@\n-old\n+new")
         await pilot.pause()
         assert panel.display is True
         # Act
