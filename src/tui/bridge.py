@@ -33,7 +33,7 @@ from tui.event_bus import (
 
 CLAUDE = AgentSpec(name="claude", command="claude", args=("-p",))
 # codex exec = non-interactive mode; read-only sandbox prevents file writes during debate
-CODEX = AgentSpec(name="codex", command="codex", args=("exec", "--ephemeral", "--sandbox", "read-only"))
+CODEX = AgentSpec(name="codex", command="codex", args=("exec", "--ephemeral", "--sandbox", "read-only", "--skip-git-repo-check"))
 
 
 # ---------------------------------------------------------------------------
