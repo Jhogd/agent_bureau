@@ -63,17 +63,14 @@ class StatusBar(Static):
             classification_part = "agents agree"
         self.update(f"Both done — {done_part}  •  {classification_part}")
 
-    def show_debating(self, round_num: int, max_rounds: int) -> None:
-        """Update text during live-debate rounds."""
-        self.update(f"Debating — round {round_num}/{max_rounds}  •  Esc: end debate")
-
-    def show_pick_winner(self) -> None:
-        """Update text when pick-winner modal is showing."""
-        self.update("Pick winner  •  arrow keys + Enter to select")
-
     def show_reconciling(self) -> None:
         """Update text during agent reconciliation."""
         self.update("Reconciling — agents comparing proposals...")
+
+    def show_reviewing(self, agent_counts: dict[str, int]) -> None:
+        """Update text when reconciliation is done and review bar is active."""
+        done_part = ", ".join(f"{name}: {count} lines" for name, count in agent_counts.items())
+        self.update(f"Reconciled — {done_part}")
 
     def show_apply_confirm(self, file_count: int) -> None:
         """Update text during apply confirmation."""

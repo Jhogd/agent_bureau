@@ -10,14 +10,15 @@ Tests cover:
   - State machine: Input disabled while streaming
   - Classification: disagreement highlight applied when disagreements exist
   - Clear: Ctrl-L clears both panes and resets status bar
-  - Phase 4: flow picker, round boundary, debate ended, reconciliation, apply result
+  - Reconciliation: ReconciliationReady shows panel and review bar
+  - Apply result: confirmed/rejected returns to IDLE
 """
 import pytest
 
 from tui.app import AgentBureauApp
 from tui.messages import (
     AgentFinished, ClassificationDone, TokenReceived,
-    RoundBoundary, DebateEnded, ReconciliationReady, ApplyResult,
+    ReconciliationReady, ApplyResult,
 )
 from tui.session import SessionState
 from tui.widgets.agent_pane import AgentPane
@@ -204,7 +205,7 @@ async def test_cancel_in_quit_screen_returns_to_tui():
         assert not isinstance(app.screen, QuitScreen)
 
 
-# --- New Phase 3 integration tests ---
+# --- Message routing tests ---
 
 @pytest.mark.asyncio
 async def test_token_received_routes_to_correct_pane():
@@ -250,6 +251,8 @@ async def test_agent_finished_with_error_shows_error_in_pane():
         assert left_pane.line_count >= 1
 
 
+# --- State machine tests ---
+
 @pytest.mark.asyncio
 async def test_state_machine_disables_input_while_streaming():
     """Setting session_state=STREAMING disables the prompt input."""
@@ -283,6 +286,8 @@ async def test_state_machine_enables_input_when_idle():
         assert not prompt_input.disabled
 
 
+# --- Classification tests ---
+
 @pytest.mark.asyncio
 async def test_classification_done_sets_disagreement_highlight():
     """ClassificationDone with non-empty disagreements adds 'disagreement' class to both panes."""
@@ -313,6 +318,8 @@ async def test_classification_done_without_disagreements_no_highlight():
         assert "disagreement" not in right_pane.classes
 
 
+# --- Clear tests ---
+
 @pytest.mark.asyncio
 async def test_ctrl_l_clears_both_panes():
     """Ctrl-L clears both panes simultaneously."""
@@ -334,67 +341,7 @@ async def test_ctrl_l_clears_both_panes():
         assert right_pane.line_count == 0
 
 
-# --- Phase 4 integration tests ---
-
-
-@pytest.mark.asyncio
-async def test_flow_picker_state_set_on_session_start():
-    """_start_session sets session_state to FLOW_PICK before flow picker appears."""
-    app = AgentBureauApp()
-    async with app.run_test(size=(120, 40)) as pilot:
-        await pilot.pause()
-        # Directly set FLOW_PICK to simulate what _start_session does
-        app.session_state = SessionState.FLOW_PICK
-        await pilot.pause()
-        assert app.session_state == SessionState.FLOW_PICK
-        # Input should be disabled in non-IDLE states
-        from textual.widgets import Input
-        prompt_input = app.query_one("#prompt-input", Input)
-        assert prompt_input.disabled
-
-
-@pytest.mark.asyncio
-async def test_round_boundary_inserts_divider():
-    """Post RoundBoundary(round_num=2) and verify both panes contain round marker text."""
-    app = AgentBureauApp()
-    async with app.run_test(size=(120, 40)) as pilot:
-        await pilot.pause()
-        # Post round boundary message
-        app.post_message(RoundBoundary(round_num=2))
-        await pilot.pause()
-        left_pane = app.query_one("#pane-left", AgentPane)
-        right_pane = app.query_one("#pane-right", AgentPane)
-        # Both panes should have received the divider line
-        assert left_pane.line_count >= 1
-        assert right_pane.line_count >= 1
-
-
-@pytest.mark.asyncio
-async def test_debate_ended_transitions_to_pick_winner_state():
-    """Post DebateEnded() and verify session_state transitions to PICK_WINNER."""
-    app = AgentBureauApp()
-    async with app.run_test(size=(120, 40)) as pilot:
-        await pilot.pause()
-        # Post DebateEnded message
-        app.post_message(DebateEnded())
-        await pilot.pause()
-        # State should transition to PICK_WINNER
-        assert app.session_state == SessionState.PICK_WINNER
-
-
-@pytest.mark.asyncio
-async def test_debate_ended_updates_status_bar():
-    """Post DebateEnded() and verify status bar shows pick-winner text."""
-    from tui.widgets.status_bar import StatusBar
-    app = AgentBureauApp()
-    async with app.run_test(size=(120, 40)) as pilot:
-        await pilot.pause()
-        app.post_message(DebateEnded())
-        await pilot.pause()
-        status_bar = app.query_one("#status-bar", StatusBar)
-        # Status bar should contain "Pick winner" text
-        assert "Pick winner" in str(status_bar.render())
-
+# --- Reconciliation tests ---
 
 @pytest.mark.asyncio
 async def test_reconciliation_ready_shows_panel():
@@ -417,6 +364,43 @@ async def test_reconciliation_ready_shows_panel():
         # Panel should now be visible
         assert recon_panel.display
 
+
+@pytest.mark.asyncio
+async def test_reconciliation_ready_shows_review_bar():
+    """Post ReconciliationReady and verify ReviewBar becomes visible."""
+    from tui.widgets.review_bar import ReviewBar
+    app = AgentBureauApp()
+    async with app.run_test(size=(120, 40)) as pilot:
+        await pilot.pause()
+        review_bar = app.query_one("#review-bar", ReviewBar)
+        assert not review_bar.display
+        app.post_message(ReconciliationReady(
+            discussion_text="discuss",
+            diff_text="",
+            agreed_code="",
+            language="python",
+        ))
+        await pilot.pause()
+        assert review_bar.display
+
+
+@pytest.mark.asyncio
+async def test_reconciliation_ready_sets_reviewing_state():
+    """Post ReconciliationReady and verify session_state transitions to REVIEWING."""
+    app = AgentBureauApp()
+    async with app.run_test(size=(120, 40)) as pilot:
+        await pilot.pause()
+        app.post_message(ReconciliationReady(
+            discussion_text="discuss",
+            diff_text="",
+            agreed_code="",
+            language="python",
+        ))
+        await pilot.pause()
+        assert app.session_state == SessionState.REVIEWING
+
+
+# --- Apply result tests ---
 
 @pytest.mark.asyncio
 async def test_apply_result_confirmed_returns_to_idle():

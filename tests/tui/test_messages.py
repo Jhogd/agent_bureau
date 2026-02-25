@@ -1,23 +1,19 @@
-"""Tests for tui.messages — Phase 3 and Phase 4 message types.
+"""Tests for tui.messages — message types.
 
-Tests verify that TokenReceived, AgentFinished, ClassificationDone (Phase 3)
-and RoundBoundary, DebateEnded, ReconciliationReady, ApplyResult (Phase 4)
-are Textual Message subclasses with the correct typed fields.
+Tests verify that TokenReceived, AgentFinished, ClassificationDone,
+ReconciliationReady, and ApplyResult are Textual Message subclasses
+with the correct typed fields.
 """
 from tui.messages import (
     TokenReceived,
     AgentFinished,
     ClassificationDone,
-    RoundBoundary,
-    DebateEnded,
     ReconciliationReady,
     ApplyResult,
 )
 from tui.event_bus import AgentDone, AgentError, AgentTimeout
 from textual.message import Message
 
-
-# --- Phase 3 message tests ---
 
 def test_token_received_is_message():
     # Arrange / Act
@@ -74,29 +70,6 @@ def test_classification_done_fields():
     # Assert
     assert msg.disagreements == []
     assert msg.full_texts == {"claude": "x", "codex": "y"}
-
-
-# --- Phase 4 message tests ---
-
-def test_round_boundary_has_round_num():
-    # Arrange / Act
-    msg = RoundBoundary(round_num=1)
-    # Assert
-    assert msg.round_num == 1
-
-
-def test_round_boundary_is_message():
-    # Arrange / Act
-    msg = RoundBoundary(round_num=2)
-    # Assert
-    assert isinstance(msg, Message)
-
-
-def test_debate_ended_is_message():
-    # Arrange / Act
-    msg = DebateEnded()
-    # Assert
-    assert isinstance(msg, Message)
 
 
 def test_reconciliation_ready_fields():
