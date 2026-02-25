@@ -9,6 +9,9 @@ description = "Visible disagreement orchestrator v1"
 requires-python = ">=3.10"
 dependencies = ["textual>=0.80.0,<9"]
 
+[project.scripts]
+agent-bureau = "tui.app:main"
+
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "pytest-asyncio>=0.25,<2.0"]
 
