@@ -96,7 +96,6 @@ QuitScreen {
     height: 3;
     dock: bottom;
     background: $panel-darken-1;
-    border-top: solid $primary-darken-2;
     padding: 1 1;
 }
 
