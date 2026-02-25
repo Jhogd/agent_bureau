@@ -32,7 +32,8 @@ from tui.event_bus import (
 # ---------------------------------------------------------------------------
 
 CLAUDE = AgentSpec(name="claude", command="claude", args=("-p",))
-CODEX = AgentSpec(name="codex", command="codex")
+# codex exec = non-interactive mode (streams to stdout); --ephemeral avoids saving sessions
+CODEX = AgentSpec(name="codex", command="codex", args=("exec", "--ephemeral"))
 
 
 # ---------------------------------------------------------------------------
