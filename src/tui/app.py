@@ -140,11 +140,11 @@ class AgentBureauApp(App):
 
     async def _run_pick_one(self, prompt: str) -> None:
         """Worker: fan-out to both agents, collect responses, then go to pick-winner."""
-        from tui.bridge import _stream_pty, _stream_pipe, _pty_available, CLAUDE, CODEX
+        from tui.bridge import _stream_pipe, CLAUDE, CODEX
 
         self.session_state = SessionState.STREAMING
         q: asyncio.Queue[BridgeEvent] = asyncio.Queue()
-        stream_fn = _stream_pty if _pty_available() else _stream_pipe
+        stream_fn = _stream_pipe
 
         task_a = asyncio.create_task(stream_fn(CLAUDE, prompt, 60.0, q))
         task_b = asyncio.create_task(stream_fn(CODEX, prompt, 60.0, q))
@@ -166,12 +166,12 @@ class AgentBureauApp(App):
 
     async def _run_live_debate(self, prompt: str) -> None:
         """Worker: run up to MAX_ROUNDS of debate with round-boundary markers."""
-        from tui.bridge import _stream_pty, _stream_pipe, _pty_available, CLAUDE, CODEX
+        from tui.bridge import _stream_pipe, CLAUDE, CODEX
 
         MAX_ROUNDS = 3  # Claude's discretion default; change this constant to adjust
         self._debate_stop.clear()
         self.session_state = SessionState.DEBATING
-        stream_fn = _stream_pty if _pty_available() else _stream_pipe
+        stream_fn = _stream_pipe
 
         last_claude = ""
         last_codex = ""
@@ -344,7 +344,7 @@ class AgentBureauApp(App):
 
     async def _run_reconciliation(self, winner: str, other: str) -> None:
         """Worker: feed both proposals to winner agent for reconciliation, then show diff."""
-        from tui.bridge import _stream_pty, _stream_pipe, _pty_available, CLAUDE
+        from tui.bridge import _stream_pipe, CLAUDE
         from tui.apply import extract_code_proposals, generate_unified_diff
 
         self.session_state = SessionState.RECONCILING
@@ -365,7 +365,7 @@ class AgentBureauApp(App):
         )
 
         q: asyncio.Queue[BridgeEvent] = asyncio.Queue()
-        stream_fn = _stream_pty if _pty_available() else _stream_pipe
+        stream_fn = _stream_pipe
         task = asyncio.create_task(stream_fn(CLAUDE, recon_prompt, 90.0, q))
 
         recon_tokens: list[str] = []

@@ -31,7 +31,7 @@ from tui.event_bus import (
 # Public agent defaults
 # ---------------------------------------------------------------------------
 
-CLAUDE = AgentSpec(name="claude", command="claude")
+CLAUDE = AgentSpec(name="claude", command="claude", args=("-p",))
 CODEX = AgentSpec(name="codex", command="codex")
 
 

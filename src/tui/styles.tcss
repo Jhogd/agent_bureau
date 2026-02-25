@@ -91,17 +91,20 @@ QuitScreen {
     dock: top;
 }
 
-/* Prompt input bar — one line at the bottom, below agent panes */
+/* Prompt input bar — three lines at the bottom, visually distinct from panes */
 #prompt-bar {
-    height: 1;
+    height: 3;
     dock: bottom;
-    background: $surface-darken-1;
+    background: $panel-darken-1;
+    border-top: solid $primary-darken-2;
+    padding: 1 1;
 }
 
 #prompt-bar Input {
-    background: $surface-darken-1;
+    background: $panel-darken-1;
     border: none;
     height: 1;
+    color: $text;
 }
 
 /* Disagreement highlight — pane header changes color when agents disagree */
