@@ -134,16 +134,28 @@ FlowPickerScreen #flow-options {
 }
 
 WinnerPickerScreen {
-    align: center middle;
-    background: rgba(0, 0, 0, 0.5);
+    align: left bottom;
+    background: rgba(0, 0, 0, 0);
 }
 
-WinnerPickerScreen #winner-dialog {
-    width: 60;
+WinnerPickerScreen #winner-bar {
+    width: 100%;
     height: auto;
-    background: $surface;
-    border: thick $background 80%;
-    padding: 1 2;
+    background: $panel-darken-2;
+    padding: 0 1;
+}
+
+WinnerPickerScreen #winner-hint {
+    height: 1;
+    color: $text-muted;
+    content-align: left middle;
+}
+
+WinnerPickerScreen #winner-options {
+    width: 100%;
+    height: auto;
+    border: none;
+    padding: 0;
 }
 
 ConfirmEndDebateScreen {

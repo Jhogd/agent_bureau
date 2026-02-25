@@ -1,4 +1,7 @@
-"""WinnerPickerScreen — overlay modal for picking the debate winner.
+"""WinnerPickerScreen — slim bottom bar for picking the debate winner.
+
+Appears anchored to the bottom of the screen with a transparent background
+so agent pane content remains fully visible above it.
 
 Dismiss contract: dismisses with one of 'agent-a', 'agent-b',
 'keep-discussing', or 'cancel' (str).
@@ -13,7 +16,7 @@ from textual.widgets._option_list import Option
 
 
 class WinnerPickerScreen(ModalScreen[str]):
-    """Overlay modal for picking a debate winner.
+    """Slim bottom-bar pick-winner — pane content stays visible above it.
 
     Returns one of 'agent-a', 'agent-b', 'keep-discussing', or 'cancel' on dismiss.
     Escape cancels (no changes).
@@ -21,15 +24,20 @@ class WinnerPickerScreen(ModalScreen[str]):
 
     DEFAULT_CSS = """
     WinnerPickerScreen {
-        align: center middle;
-        background: transparent;
+        align: left bottom;
+        background: rgba(0, 0, 0, 0);
     }
-    #winner-banner {
-        width: 50;
+    #winner-bar {
+        width: 100%;
         height: auto;
         background: $panel-darken-2;
-        border: thick $background 80%;
         padding: 0 1;
+    }
+    #winner-hint {
+        width: 100%;
+        height: 1;
+        color: $text-muted;
+        content-align: left middle;
     }
     #winner-options {
         width: 100%;
@@ -44,11 +52,11 @@ class WinnerPickerScreen(ModalScreen[str]):
     ]
 
     def compose(self) -> ComposeResult:
-        with Vertical(id="winner-banner"):
-            yield Label("Pick a winner:")
+        with Vertical(id="winner-bar"):
+            yield Label("↑↓ pick winner  •  Enter confirm  •  Esc cancel", id="winner-hint")
             yield OptionList(
-                Option("Agent A wins", id="agent-a"),
-                Option("Agent B wins", id="agent-b"),
+                Option("Claude wins", id="agent-a"),
+                Option("Codex wins", id="agent-b"),
                 Option("Keep discussing", id="keep-discussing"),
                 Option("Cancel (no changes)", id="cancel"),
                 id="winner-options",
