@@ -54,6 +54,16 @@ class ReconciliationPanel(Widget):
         else:
             log.write("[dim]No code differences — both reconciliations are identical.[/dim]")
 
+    def show_merge_output(self, text: str) -> None:
+        """Replace panel content with the merged output text. Makes panel visible."""
+        self.display = True
+        log = self.query_one("#recon-log", RichLog)
+        log.clear()
+        if text.strip():
+            log.write(text)
+        else:
+            log.write("[dim]No content in merged output.[/dim]")
+
     def hide_panel(self) -> None:
         """Hide the panel and clear content (call on session reset)."""
         self.display = False

@@ -32,39 +32,26 @@ from tui.event_bus import (
 # ---------------------------------------------------------------------------
 
 _SHARED_PREAMBLE = """\
-You are participating in Agent Bureau, a collaborative two-agent system.
+You are one of two AI agents in Agent Bureau. Both agents receive the same \
+user prompt simultaneously and respond independently. Answer the task directly \
+— do not simulate, anticipate, or describe any subsequent steps.
 
-## How it works
-1. You and the other agent each receive the same user prompt simultaneously \
-and respond independently.
-2. Once both agents have responded, each of you sees the other's full answer \
-and independently proposes a unified solution.
-3. The user reviews both unified proposals and either picks one or requests \
-further reconciliation rounds — each round feeding the previous reconciliation \
-outputs back in.
-
-## Response guidelines
-- Be concrete and complete. Produce working code, not pseudocode.
+## Output format
+- Produce working, complete code — not pseudocode.
 - Wrap code in fenced blocks with a language tag:
     ```python
     <code>
     ```
-- If the code targets a specific file, put the path as a comment on the \
+- If the code targets a specific file, add the path as a comment on the \
 first line inside the block:
     ```python
     # src/module.py
     <code>
-    ```
-- Keep explanations brief — prioritise the working code.
-
-## Reconciliation (when reviewing the other agent's response)
-- Acknowledge what they got right.
-- Where your approaches differ, explain the trade-off honestly.
-- Produce a genuinely improved unified solution — not just a copy of one side.\
+    ```\
 """
 
-_CLAUDE_PREAMBLE = _SHARED_PREAMBLE + "\n\nYou are the Claude agent in this session."
-_CODEX_PREAMBLE = _SHARED_PREAMBLE + "\n\nYou are the Codex agent in this session."
+_CLAUDE_PREAMBLE = _SHARED_PREAMBLE + "\n\nYou are the Claude agent."
+_CODEX_PREAMBLE = _SHARED_PREAMBLE + "\n\nYou are the Codex agent."
 
 # ---------------------------------------------------------------------------
 # Public agent defaults
@@ -215,7 +202,7 @@ async def _stream_pipe(
         *spec.build_argv(prompt),
         stdin=asyncio.subprocess.DEVNULL,
         stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.STDOUT,
+        stderr=asyncio.subprocess.DEVNULL,  # discard stderr; status/progress noise from agents
     )
 
     assert proc.stdout is not None

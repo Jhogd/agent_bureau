@@ -67,6 +67,7 @@ class AgentBureauApp(App):
         Binding("r", "reconcile_again", "Reconcile further", show=False),
         Binding("c", "accept_claude", "Apply Claude", show=False),
         Binding("x", "accept_codex", "Apply Codex", show=False),
+        Binding("y", "merge_and_apply", "Merge & apply", show=False),
     ]
 
     session_state: reactive[SessionState] = reactive(SessionState.IDLE)
@@ -433,6 +434,75 @@ class AgentBureauApp(App):
             self._agreed_language = "text"
             self._agreed_filename = None
         self._start_apply()
+
+    def action_merge_and_apply(self) -> None:
+        """Merge both reconciliation outputs via a single Claude call, then apply."""
+        if self.session_state != SessionState.REVIEWING:
+            return
+        self.query_one("#review-bar", ReviewBar).hide()
+        self.session_state = SessionState.RECONCILING
+        self.query_one("#status-bar", StatusBar).update("Merging — producing final unified solution...")
+        self.run_worker(
+            self._run_merge_and_apply(),
+            exclusive=False,
+            exit_on_error=False,
+            name="merge-apply",
+        )
+
+    async def _run_merge_and_apply(self) -> None:
+        """Worker: single Claude call that merges both recon outputs into one result."""
+        from tui.bridge import _stream_pipe, CLAUDE
+        from tui.apply import extract_code_proposals
+
+        claude_recon = self._last_texts.get("claude", "")
+        codex_recon = self._last_texts.get("codex", "")
+
+        merge_prompt = (
+            f"Here are two reconciled solutions from two AI agents:\n\n"
+            f"## Claude's reconciliation\n{claude_recon}\n\n"
+            f"## Codex's reconciliation\n{codex_recon}\n\n"
+            f"Produce one definitive unified solution that takes the best of both. "
+            f"Write a one-sentence rationale, then provide the final code in a "
+            f"fenced block with the target filename as the first line comment."
+        )
+
+        q: asyncio.Queue[BridgeEvent] = asyncio.Queue()
+        task = asyncio.create_task(_stream_pipe(CLAUDE, merge_prompt, 90.0, q))
+
+        merged_tokens: list[str] = []
+        while True:
+            event = await q.get()
+            if event.type == "token":
+                merged_tokens.append(event.text)
+            elif event.type in ("done", "error", "timeout"):
+                break
+        await task
+
+        merged_text = "\n".join(merged_tokens)
+        proposals = extract_code_proposals(merged_text)
+        if proposals:
+            best = proposals[-1]
+            self._agreed_code = best.code
+            self._agreed_language = best.language
+            self._agreed_filename = best.filename
+        else:
+            self._agreed_code = merged_text
+            self._agreed_language = "text"
+            self._agreed_filename = None
+
+        # Show the merged output in the reconciliation panel for review
+        self.query_one("#recon-panel", ReconciliationPanel).show_merge_output(merged_text)
+        self.query_one("#review-bar", ReviewBar).hide()
+
+        file_count = 1 if self._agreed_filename else 0
+        self.session_state = SessionState.CONFIRMING_APPLY
+        self.query_one("#status-bar", StatusBar).show_apply_confirm(file_count)
+        self.run_worker(
+            self._apply_confirm_flow(),
+            exclusive=False,
+            exit_on_error=False,
+            name="apply-confirm",
+        )
 
     def _start_apply(self) -> None:
         self.query_one("#review-bar", ReviewBar).hide()
