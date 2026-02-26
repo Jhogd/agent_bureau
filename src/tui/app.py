@@ -17,11 +17,13 @@ Flow:
   so each subsequent round is cross-reviewing the previous reconciliation.
 
 Keyboard bindings:
-  left / right  — switch pane focus
-  q             — exit immediately
-  ctrl+c        — push QuitScreen confirmation dialog
-  ctrl+l        — clear both panes and reset
-  r / c / x     — review actions (only active during REVIEWING state)
+  left / right        — switch pane focus
+  ctrl+left/right     — shift horizontal divider (±5 %)
+  ctrl+up/down        — resize reconciliation panel (±2 rows)
+  q                   — exit immediately
+  ctrl+c              — push QuitScreen confirmation dialog
+  ctrl+l              — clear both panes and reset
+  r / c / x / y       — review actions (only active during REVIEWING state)
 """
 from __future__ import annotations
 
@@ -63,6 +65,11 @@ class AgentBureauApp(App):
         Binding("q", "quit", "Quit"),
         Binding("ctrl+c", "confirm_quit", "Exit", priority=True),
         Binding("ctrl+l", "clear_panes", "Clear", show=False),
+        # Pane resize
+        Binding("ctrl+left", "pane_shift_left", "Divider left", show=False),
+        Binding("ctrl+right", "pane_shift_right", "Divider right", show=False),
+        Binding("ctrl+up", "recon_shrink", "Shrink recon", show=False),
+        Binding("ctrl+down", "recon_grow", "Grow recon", show=False),
         # Review actions — only honoured when session_state == REVIEWING
         Binding("r", "reconcile_again", "Reconcile further", show=False),
         Binding("c", "accept_claude", "Apply Claude", show=False),
@@ -71,6 +78,10 @@ class AgentBureauApp(App):
     ]
 
     session_state: reactive[SessionState] = reactive(SessionState.IDLE)
+    # Horizontal split: left pane weight out of 100 (default 50/50)
+    pane_split: reactive[int] = reactive(50)
+    # Reconciliation panel height in rows
+    recon_height: reactive[int] = reactive(15)
 
     def compose(self) -> ComposeResult:
         yield StatusBar(id="status-bar")
@@ -96,6 +107,19 @@ class AgentBureauApp(App):
         try:
             prompt_input = self.query_one("#prompt-input", Input)
             prompt_input.disabled = state != SessionState.IDLE
+        except Exception:
+            pass
+
+    def watch_pane_split(self, split: int) -> None:
+        try:
+            self.query_one("#pane-left").styles.width = f"{split}fr"
+            self.query_one("#pane-right").styles.width = f"{100 - split}fr"
+        except Exception:
+            pass
+
+    def watch_recon_height(self, height: int) -> None:
+        try:
+            self.query_one("#recon-panel").styles.height = height
         except Exception:
             pass
 
@@ -527,6 +551,20 @@ class AgentBureauApp(App):
             write_file_atomic(target, self._agreed_code)
             files_written.append(str(target))
         self.post_message(ApplyResult(confirmed=confirmed, files_written=files_written))
+
+    # --- Resize actions ---
+
+    def action_pane_shift_left(self) -> None:
+        self.pane_split = max(10, self.pane_split - 5)
+
+    def action_pane_shift_right(self) -> None:
+        self.pane_split = min(90, self.pane_split + 5)
+
+    def action_recon_shrink(self) -> None:
+        self.recon_height = max(4, self.recon_height - 2)
+
+    def action_recon_grow(self) -> None:
+        self.recon_height = min(50, self.recon_height + 2)
 
     # --- Standard actions ---
 
