@@ -1,12 +1,17 @@
 """AgentPane widget — a labeled, independently scrollable pane for agent output."""
+from __future__ import annotations
+
 from rich.ansi import AnsiDecoder
 from rich.text import Text
 from textual.app import ComposeResult
 from textual.binding import Binding
+from textual.timer import Timer
 from textual.widget import Widget
 from textual.widgets import Label, LoadingIndicator, RichLog
 
 from tui.content import write_content_to_pane, SCROLLBACK_LIMIT
+
+_DOTS_FRAMES = ("   ", ".  ", ".. ", "...")
 
 
 class AgentPane(Widget):
@@ -36,6 +41,8 @@ class AgentPane(Widget):
         self.agent_name = agent_name
         self._has_content = False
         self._line_count: int = 0
+        self._loading_timer: Timer | None = None
+        self._loading_step: int = 0
         super().__init__(**kwargs)
 
     def compose(self) -> ComposeResult:
@@ -56,13 +63,34 @@ class AgentPane(Widget):
         self.query_one("#loading", LoadingIndicator).display = False
 
     def show_loading(self) -> None:
-        """Show the loading spinner (agent is thinking, no tokens yet)."""
-        self.query_one("#loading", LoadingIndicator).display = True
-        self.query_one("#placeholder", Label).display = False
+        """Show the loading state: animated ellipsis in header + spinner when empty."""
+        self.add_class("loading")
+        self._loading_step = 0
+        self._update_loading_header()
+        if self._loading_timer is not None:
+            self._loading_timer.stop()
+        self._loading_timer = self.set_interval(0.4, self._tick_loading)
+        if not self._has_content:
+            self.query_one("#loading", LoadingIndicator).display = True
+            self.query_one("#placeholder", Label).display = False
 
     def hide_loading(self) -> None:
-        """Hide the loading spinner (first token arrived or agent finished)."""
+        """Hide the loading state: stop animation, restore header, hide spinner."""
+        self.remove_class("loading")
+        if self._loading_timer is not None:
+            self._loading_timer.stop()
+            self._loading_timer = None
         self.query_one("#loading", LoadingIndicator).display = False
+        self.query_one("#header", Label).update(self.agent_name)
+
+    def _tick_loading(self) -> None:
+        """Advance ellipsis animation one frame."""
+        self._loading_step = (self._loading_step + 1) % len(_DOTS_FRAMES)
+        self._update_loading_header()
+
+    def _update_loading_header(self) -> None:
+        dots = _DOTS_FRAMES[self._loading_step]
+        self.query_one("#header", Label).update(f"{self.agent_name}{dots}")
 
     def write_content(self, text: str) -> None:
         """Write agent output text to the pane, showing the RichLog on first call."""
@@ -84,8 +112,9 @@ class AgentPane(Widget):
         Decodes ANSI escape sequences before writing so Rich does not
         interpret them as markup. Increments the internal line counter.
         """
-        # Hide spinner the moment content arrives
-        self.query_one("#loading", LoadingIndicator).display = False
+        # Stop loading animation the moment content arrives
+        if self.has_class("loading"):
+            self.hide_loading()
         log = self.query_one("#content", RichLog)
         if not self._has_content:
             self._has_content = True
@@ -98,11 +127,17 @@ class AgentPane(Widget):
 
     def clear(self) -> None:
         """Reset the pane to its empty state (placeholder visible, RichLog cleared)."""
+        # Stop any active loading animation
+        if self._loading_timer is not None:
+            self._loading_timer.stop()
+            self._loading_timer = None
+        self.remove_class("loading")
         log = self.query_one("#content", RichLog)
         log.clear()
         log.display = False
         self.query_one("#loading", LoadingIndicator).display = False
         self.query_one("#placeholder", Label).display = True
+        self.query_one("#header", Label).update(self.agent_name)
         self._has_content = False
         self._line_count = 0
 

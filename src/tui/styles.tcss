@@ -118,6 +118,12 @@ AgentPane.disagreement #header {
     color: $text;
 }
 
+/* Loading highlight — pane header pulses accent color while agent is thinking */
+AgentPane.loading #header {
+    background: $accent-darken-1;
+    color: $text;
+}
+
 /* ─── Phase 4: Flow Control and Code Apply ──────────────────────────────── */
 
 ApplyConfirmScreen {
