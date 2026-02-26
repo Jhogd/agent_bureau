@@ -43,6 +43,12 @@ AgentPane:focus #header {
     color: $text;
 }
 
+/* Loading spinner fills the pane body while waiting for first token */
+AgentPane LoadingIndicator {
+    height: 1fr;
+    background: transparent;
+}
+
 /* RichLog content area fills remaining height */
 AgentPane #content {
     height: 1fr;

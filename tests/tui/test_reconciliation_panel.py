@@ -62,14 +62,27 @@ async def test_show_reconciliation_no_diff_shows_placeholder():
     app = PanelTestApp()
     async with app.run_test(size=(120, 40)) as pilot:
         panel = app.query_one("#panel", ReconciliationPanel)
-        # Act — pass empty diff
-        panel.show_reconciliation("")
+        # Act — pass empty diff with code found (identical reconciliations)
+        panel.show_reconciliation("", code_found=True)
         await pilot.pause()
         log = panel.query_one("#recon-log", RichLog)
         # Assert — log has output (the placeholder message was written)
         assert len(log.lines) > 0
         # The panel should also be visible
         assert panel.display is True
+
+
+@pytest.mark.asyncio
+async def test_show_reconciliation_no_code_shows_failure():
+    """code_found=False shows the failure state in the panel."""
+    app = PanelTestApp()
+    async with app.run_test(size=(120, 40)) as pilot:
+        panel = app.query_one("#panel", ReconciliationPanel)
+        panel.show_reconciliation("", code_found=False)
+        await pilot.pause()
+        assert panel.display is True
+        log = panel.query_one("#recon-log", RichLog)
+        assert len(log.lines) > 0
 
 
 @pytest.mark.asyncio

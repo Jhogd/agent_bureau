@@ -196,6 +196,8 @@ class AgentBureauApp(App):
         self.query_one("#pane-left", AgentPane).write_token(separator)
         self.query_one("#pane-right", AgentPane).write_token(separator)
 
+        self.query_one("#pane-left", AgentPane).show_loading()
+        self.query_one("#pane-right", AgentPane).show_loading()
         self.session_state = SessionState.STREAMING
         env_ctx = self._gather_env_context()
         full_prompt = f"## Environment\n{env_ctx}\n\n## Task\n{prompt}" if env_ctx else prompt
@@ -310,6 +312,8 @@ class AgentBureauApp(App):
         # Auto-start reconciliation — no user action required
         self.session_state = SessionState.RECONCILING
         self.query_one("#status-bar", StatusBar).show_reconciling()
+        self.query_one("#pane-left", AgentPane).show_loading()
+        self.query_one("#pane-right", AgentPane).show_loading()
         self.run_worker(
             self._run_reconciliation(),
             exclusive=False,
@@ -395,8 +399,12 @@ class AgentBureauApp(App):
 
     def on_reconciliation_ready(self, message: ReconciliationReady) -> None:
         """Show reconciliation panel and review bar."""
+        code_found = (
+            self._recon_proposals.get("claude") is not None
+            or self._recon_proposals.get("codex") is not None
+        )
         self.query_one("#recon-panel", ReconciliationPanel).show_reconciliation(
-            message.diff_text
+            message.diff_text, code_found=code_found
         )
         self.session_state = SessionState.REVIEWING
         self.query_one("#status-bar", StatusBar).show_reviewing(self._agent_line_counts)
@@ -424,6 +432,8 @@ class AgentBureauApp(App):
         self.query_one("#recon-panel", ReconciliationPanel).hide_panel()
         self.session_state = SessionState.RECONCILING
         self.query_one("#status-bar", StatusBar).show_reconciling()
+        self.query_one("#pane-left", AgentPane).show_loading()
+        self.query_one("#pane-right", AgentPane).show_loading()
         self.run_worker(
             self._run_reconciliation(),
             exclusive=False,
@@ -542,12 +552,22 @@ class AgentBureauApp(App):
 
     async def _apply_confirm_flow(self) -> None:
         from tui.apply import write_file_atomic
+
+        # Use fallback filename when agents omit the filename comment
+        target_filename = self._agreed_filename
+        if not target_filename and self._agreed_code.strip():
+            _ext = {"python": "py", "javascript": "js", "typescript": "ts",
+                    "go": "go", "rust": "rs", "java": "java", "ruby": "rb",
+                    "bash": "sh", "shell": "sh"}.get(self._agreed_language, "txt")
+            target_filename = f"output.{_ext}"
+
         confirmed: bool = await self.push_screen(
-            ApplyConfirmScreen(), wait_for_dismiss=True
+            ApplyConfirmScreen(filename=target_filename, code=self._agreed_code),
+            wait_for_dismiss=True,
         )
         files_written: list[str] = []
-        if confirmed and self._agreed_filename and self._agreed_code:
-            target = Path(self._agreed_filename)
+        if confirmed and target_filename and self._agreed_code.strip():
+            target = Path(target_filename)
             write_file_atomic(target, self._agreed_code)
             files_written.append(str(target))
         self.post_message(ApplyResult(confirmed=confirmed, files_written=files_written))

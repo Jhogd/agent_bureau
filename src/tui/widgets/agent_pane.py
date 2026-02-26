@@ -4,7 +4,7 @@ from rich.text import Text
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.widget import Widget
-from textual.widgets import Label, RichLog
+from textual.widgets import Label, LoadingIndicator, RichLog
 
 from tui.content import write_content_to_pane, SCROLLBACK_LIMIT
 
@@ -40,6 +40,7 @@ class AgentPane(Widget):
 
     def compose(self) -> ComposeResult:
         yield Label(self.agent_name, id="header")
+        yield LoadingIndicator(id="loading")
         yield Label(f"Waiting for {self.agent_name}...", id="placeholder")
         yield RichLog(
             id="content",
@@ -52,6 +53,16 @@ class AgentPane(Widget):
     def on_mount(self) -> None:
         # Hide the RichLog until the first write; show placeholder instead.
         self.query_one("#content", RichLog).display = False
+        self.query_one("#loading", LoadingIndicator).display = False
+
+    def show_loading(self) -> None:
+        """Show the loading spinner (agent is thinking, no tokens yet)."""
+        self.query_one("#loading", LoadingIndicator).display = True
+        self.query_one("#placeholder", Label).display = False
+
+    def hide_loading(self) -> None:
+        """Hide the loading spinner (first token arrived or agent finished)."""
+        self.query_one("#loading", LoadingIndicator).display = False
 
     def write_content(self, text: str) -> None:
         """Write agent output text to the pane, showing the RichLog on first call."""
@@ -73,6 +84,8 @@ class AgentPane(Widget):
         Decodes ANSI escape sequences before writing so Rich does not
         interpret them as markup. Increments the internal line counter.
         """
+        # Hide spinner the moment content arrives
+        self.query_one("#loading", LoadingIndicator).display = False
         log = self.query_one("#content", RichLog)
         if not self._has_content:
             self._has_content = True
@@ -88,6 +101,7 @@ class AgentPane(Widget):
         log = self.query_one("#content", RichLog)
         log.clear()
         log.display = False
+        self.query_one("#loading", LoadingIndicator).display = False
         self.query_one("#placeholder", Label).display = True
         self._has_content = False
         self._line_count = 0

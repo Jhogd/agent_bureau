@@ -27,8 +27,17 @@ class ReconciliationPanel(Widget):
     ReconciliationPanel #recon-header {
         height: 1;
         background: $panel-darken-1;
+        color: $text-muted;
         content-align: left middle;
         padding: 0 1;
+    }
+    ReconciliationPanel #recon-header.success {
+        background: $success-darken-2;
+        color: $text;
+    }
+    ReconciliationPanel #recon-header.failure {
+        background: $error-darken-2;
+        color: $text;
     }
     ReconciliationPanel #recon-log {
         height: 1fr;
@@ -40,15 +49,32 @@ class ReconciliationPanel(Widget):
         yield Label("Reconciliation", id="recon-header")
         yield RichLog(id="recon-log", highlight=True, markup=True)
 
-    def show_reconciliation(self, diff_text: str) -> None:
+    def show_reconciliation(self, diff_text: str, code_found: bool = True) -> None:
         """Display unified diff between the two reconciliation proposals. Makes panel visible.
 
         Args:
-            diff_text: Unified diff string (may be empty if proposals are identical).
+            diff_text:  Unified diff string (may be empty if proposals are identical).
+            code_found: False when neither agent produced a fenced code block.
         """
         self.display = True
+        header = self.query_one("#recon-header", Label)
         log = self.query_one("#recon-log", RichLog)
         log.clear()
+
+        if not code_found:
+            header.update("Reconciliation — no code blocks detected  •  [r] to retry")
+            header.set_class(True, "failure")
+            header.set_class(False, "success")
+            log.write(
+                "[bold red]Neither agent produced a fenced code block.[/bold red]\n"
+                "Press [bold][r][/bold] to reconcile again, or check that agents "
+                "are formatting responses with ``` fences."
+            )
+            return
+
+        header.update("Reconciliation — diff: Claude vs Codex")
+        header.set_class(True, "success")
+        header.set_class(False, "failure")
         if diff_text.strip():
             log.write(Syntax(diff_text, "diff", theme="monokai", background_color="default"))
         else:
