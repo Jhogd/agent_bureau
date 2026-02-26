@@ -26,6 +26,8 @@ Keyboard bindings:
 from __future__ import annotations
 
 import asyncio
+import os
+import subprocess
 from pathlib import Path
 
 from textual.app import App, ComposeResult
@@ -96,6 +98,54 @@ class AgentBureauApp(App):
         except Exception:
             pass
 
+    # --- Environment context ---
+
+    @staticmethod
+    def _gather_env_context() -> str:
+        """Collect cwd, git branch, and top-level project structure.
+
+        Returns a compact multi-line string suitable for prepending to user
+        prompts so both agents understand the environment they are operating in.
+        Returns an empty string if nothing useful can be gathered.
+        """
+        lines: list[str] = []
+
+        cwd = os.getcwd()
+        lines.append(f"Working directory: {cwd}")
+
+        try:
+            branch = subprocess.check_output(
+                ["git", "branch", "--show-current"],
+                text=True, stderr=subprocess.DEVNULL,
+            ).strip()
+            if branch:
+                lines.append(f"Git branch: {branch}")
+        except Exception:
+            pass
+
+        try:
+            remote = subprocess.check_output(
+                ["git", "remote", "get-url", "origin"],
+                text=True, stderr=subprocess.DEVNULL,
+            ).strip()
+            if remote:
+                lines.append(f"Git remote: {remote}")
+        except Exception:
+            pass
+
+        try:
+            _SKIP = {"__pycache__", "node_modules", ".git", ".venv", "venv", ".mypy_cache"}
+            entries = sorted(
+                e for e in os.listdir(cwd)
+                if e not in _SKIP and not (e.startswith(".") and e not in {".planning"})
+            )
+            if entries:
+                lines.append(f"Project root: {', '.join(entries[:30])}")
+        except Exception:
+            pass
+
+        return "\n".join(lines)
+
     # --- Prompt submission ---
 
     def on_input_submitted(self, event: Input.Submitted) -> None:
@@ -122,8 +172,10 @@ class AgentBureauApp(App):
         self.query_one("#pane-right", AgentPane).write_token(separator)
 
         self.session_state = SessionState.STREAMING
+        env_ctx = self._gather_env_context()
+        full_prompt = f"## Environment\n{env_ctx}\n\n## Task\n{prompt}" if env_ctx else prompt
         self.run_worker(
-            self._run_session(prompt),
+            self._run_session(full_prompt),
             exclusive=True,
             exit_on_error=False,
             name="bridge-session",

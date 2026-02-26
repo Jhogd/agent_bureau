@@ -18,10 +18,21 @@ class AgentSpec:
     name: str       # Human-readable identifier, e.g., "claude"
     command: str    # Executable name, e.g., "claude"
     args: tuple[str, ...] = ()
+    system_prompt: str = ""
+    # If set, system_prompt is passed as --flag "text" before the user prompt.
+    # If empty, system_prompt is prepended directly to the user prompt string.
+    system_prompt_flag: str = ""
 
     def build_argv(self, prompt: str) -> list[str]:
-        """Return the full argument vector: [command, *args, prompt]."""
-        return [self.command, *self.args, prompt]
+        """Return the full argument vector, injecting system_prompt if set."""
+        argv = [self.command, *self.args]
+        if self.system_prompt:
+            if self.system_prompt_flag:
+                argv.extend([self.system_prompt_flag, self.system_prompt])
+            else:
+                prompt = f"{self.system_prompt}\n\n---\n\n{prompt}"
+        argv.append(prompt)
+        return argv
 
 
 @dataclass(frozen=True)
