@@ -268,28 +268,17 @@ class AgentBureauApp(App):
 
     def _run_classification(self) -> None:
         from disagree_v1.classifier import classify_disagreements
-        from disagree_v1.adapters import CommandJsonAdapter
-        from disagree_v1.models import AgentResponse
 
         full_texts: dict[str, str] = {}
-        responses: dict[str, AgentResponse] = {}
-
         for agent_name, event in self._terminal_events.items():
             if isinstance(event, AgentDone):
                 full_texts[agent_name] = event.full_text
-                adapter = CommandJsonAdapter(name=agent_name, command_template="")
-                try:
-                    payload = adapter._parse_payload(event.full_text)
-                    response = adapter._validate_payload(payload)
-                    responses[agent_name] = response
-                except Exception:
-                    pass
 
         disagreements: list = []
-        if len(responses) == 2:
-            agents = list(responses.values())
+        texts = list(full_texts.values())
+        if len(texts) == 2:
             try:
-                disagreements = classify_disagreements(agents[0], agents[1])
+                disagreements = classify_disagreements(texts[0], texts[1])
             except Exception:
                 disagreements = []
 
